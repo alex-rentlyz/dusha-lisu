@@ -8,7 +8,7 @@ import { useFirestoreData } from "@/app/lib/hooks/useFirestoreData";
 const HOUSES = [
   { id: "house1", name: "Аромат хвої", color: "#4A6741", accent: "#6B8F3C", weekday: 13000, weekend: 16000 },
   { id: "house2", name: "Сонячна оселя", color: "#8B7D3C", accent: "#BFA84F", weekday: 7000, weekend: 8000 },
-  { id: "house3", name: "Лісова тиша", color: "#3D5A4C", accent: "#5A8A6A", weekday: 5500, weekend: 6500 },
+  { id: "house3", name: "Лісова тиша", color: "#4A7B8B", accent: "#5A9DB0", weekday: 5500, weekend: 6500 },
 ];
 
 const MONTHS = ["Січень","Лютий","Березень","Квітень","Травень","Червень","Липень","Серпень","Вересень","Жовтень","Листопад","Грудень"];
@@ -28,6 +28,7 @@ function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
 function displayDate(s) { const d = parseDate(s); return `${d.getDate()} ${MONTHS[d.getMonth()].substring(0,3).toLowerCase()}`; }
 function nightsLabel(n) { return n === 1 ? "ніч" : (n >= 2 && n <= 4) ? "ночі" : "ночей"; }
 function commentsLabel(n) { return n === 1 ? "коментар" : (n >= 2 && n <= 4) ? "коментарі" : "коментарів"; }
+function shortName(name, max = 10) { if (!name) return "?"; const first = name.split(/\s+/)[0]; return first.length > max ? first.slice(0, max - 1) + "…" : first; }
 function formatMoney(n) { return n.toLocaleString("uk-UA") + " ₴"; }
 
 function isWeekend(dateStr) {
@@ -72,6 +73,28 @@ function PineTree({ size = 24, color = "#3D5A2E" }) {
       <rect x="10.5" y="23" width="3" height="4" rx="0.5" fill={color} opacity="0.6"/>
     </svg>
   );
+}
+
+function IconUser({ size = 17, color = "currentColor" }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
+}
+function IconCalendar({ size = 17, color = "currentColor" }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>);
+}
+function IconChart({ size = 17, color = "currentColor" }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>);
+}
+function IconClipboard({ size = 17, color = "currentColor" }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>);
+}
+function IconMoney({ size = 17, color = "currentColor" }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>);
+}
+function IconMoon({ size = 14, color = "currentColor" }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>);
+}
+function IconComment({ size = 13, color = "currentColor" }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>);
 }
 
 // ── MODAL ──
@@ -389,7 +412,7 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
       {!isUnavailable && (
         <div style={{ background: "#F0EDE2", borderRadius: 14, padding: 14, marginBottom: 12, border: "1px solid #DDD8C8" }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#5A6B4A", marginBottom: 10, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 17 }}>👤</span> Контактна особа
+            <IconUser size={17} color="#5A6B4A" /> Контактна особа
           </div>
           <Input label="Ім'я" value={contactForm.name} onChange={v => setC("name", v)} required placeholder="Іван Петренко" />
           <Input label="Телефон" value={contactForm.phone} onChange={v => setC("phone", v)} placeholder="+380..." />
@@ -402,7 +425,7 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
       {!isUnavailable && nights.length > 0 && (
         <div style={{ background: "#F0EDE2", borderRadius: 14, padding: 14, marginBottom: 12, border: "1px solid #DDD8C8" }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#5A6B4A", marginBottom: 10, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 17 }}>💰</span> Вартість проживання
+            <IconMoney size={17} color="#5A6B4A" /> Вартість проживання
           </div>
           <div style={{ marginBottom: 10 }}>
             {nights.map((n, i) => {
@@ -415,7 +438,7 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
                   display: "flex", justifyContent: "space-between", padding: "4px 0",
                   fontSize: 14, color: "#5A6B4A", borderBottom: i < nights.length - 1 ? "1px solid #E0DBC8" : "none"
                 }}>
-                  <span>{d.getDate()} {MONTHS_GEN[d.getMonth()]} ({dayName}) {we ? "🌙" : ""}</span>
+                  <span>{d.getDate()} {MONTHS_GEN[d.getMonth()]} ({dayName}) {we ? <IconMoon size={12} color="#8B7D3C" /> : ""}</span>
                   <span style={{ fontWeight: 600 }}>{formatMoney(rate)}</span>
                 </div>
               );
@@ -543,27 +566,21 @@ function CalendarGrid({ year, month, bookings, house, onDayClick, contacts }) {
         {isCheckIn && (
           <div style={{ position: "absolute", top: 3, right: 3, width: 5, height: 5, borderRadius: "50%", background: sc.border }} />
         )}
-        <div style={{ fontSize: 15, fontWeight: isToday ? 800 : 500, textAlign: "center", color: isToday ? "#6B5D1C" : hasBooking ? sc.text : "#5A6B4A", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{d}</div>
+        <div style={{ fontSize: 15, fontWeight: isToday ? 800 : 500, textAlign: "center", color: isToday ? "#6B5D1C" : hasBooking ? sc.text : "#5A6B4A", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", marginTop: 4, marginBottom: 6 }}>{d}</div>
         {hasBooking && (
           <div style={{ marginTop: 2, padding: "0 3px", display: "flex", flexDirection: "column", gap: 2 }}>
             {dayBookings.map(b => {
               const color = getBookingColor(b.id);
               const contact = contacts.find(c => c.id === b.contactId);
-              const initial = b.status === "unavailable" ? "✕" : (contact?.name?.[0]?.toUpperCase() || "?");
+              const label = b.status === "unavailable" ? "✕" : shortName(contact?.name, 6);
               const isStart = b.checkIn === dayStr;
               return (
                 <div key={b.id} style={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <div style={{
-                    flex: 1, height: 4, borderRadius: 2,
-                    background: color, opacity: 0.6,
-                    borderLeft: isStart ? `2px solid ${color}` : "none",
-                  }} />
-                  {isStart && (
-                    <div style={{
-                      fontSize: 9, fontWeight: 800, color: color, lineHeight: 1,
-                      fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", flexShrink: 0,
-                    }}>{initial}</div>
-                  )}
+                    fontSize: 8, fontWeight: 800, color: color, lineHeight: 1,
+                    fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif",
+                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%", textAlign: "center",
+                  }}>{label}</div>
                 </div>
               );
             })}
@@ -637,7 +654,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
       const contact = contacts.find(c => c.id === b.contactId);
       return {
         ...b, nightsInMonth, weNights, wdNights, bookingRevenue,
-        contactName: b.status === "unavailable" ? "Недоступно" : (contact?.name || "—"),
+        contactName: b.status === "unavailable" ? "Недоступно" : shortName(contact?.name),
         totalNights: allNights.length,
       };
     }).sort((a, b) => a.checkIn > b.checkIn ? 1 : -1);
@@ -856,13 +873,15 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
         {/* Key metrics row */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
           {[
-            { n: summary.totalGuests, label: "Гостей", icon: "👤" },
-            { n: summary.totalCheckIns, label: "Заїздів", icon: "📅" },
-            { n: `${summary.avgOccupancy}%`, label: "Заповненість", icon: "📊" },
+            { n: summary.totalGuests, label: "Гостей", icon: <IconUser size={17} color="#5A6B4A" /> },
+            { n: summary.totalCheckIns, label: "Заїздів", icon: <IconCalendar size={17} color="#5A6B4A" /> },
+            { n: `${summary.avgOccupancy}%`, label: "Заповненість", icon: <IconChart size={17} color="#5A6B4A" /> },
           ].map((s, i) => (
             <div key={i} style={{ background: "#F0EDE2", borderRadius: 12, padding: "12px 8px", textAlign: "center" }}>
-              <div style={{ fontSize: 17, marginBottom: 4 }}>{s.icon}</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", lineHeight: 1 }}>{s.n}</div>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                {s.icon}
+                <div style={{ fontSize: 20, fontWeight: 800, color: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", lineHeight: 1 }}>{s.n}</div>
+              </div>
               <div style={{ fontSize: 11, color: "#9A9580", fontWeight: 600, marginTop: 4, textTransform: "uppercase", letterSpacing: 0.3 }}>{s.label}</div>
             </div>
           ))}
@@ -1315,7 +1334,7 @@ export default function GuestHouseApp() {
                         return (
                           <div key={b.id} onClick={() => setModal({ type: "editBooking", data: b })} style={{ background: "#FAFAF5", borderRadius: 14, padding: "14px 16px", border: "1px solid #DDD8C8", cursor: "pointer", borderLeft: `4px solid ${house?.color || "#ccc"}` }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
-                              <div style={{ fontWeight: 700, fontSize: 18, color: "#2D3A2E" }}>{b.status === "unavailable" ? "Недоступно" : (contact?.name || "—")}</div>
+                              <div style={{ fontWeight: 700, fontSize: 18, color: "#2D3A2E" }}>{b.status === "unavailable" ? "Недоступно" : (contact?.name || "?")}</div>
                               <Badge status={b.status} small />
                             </div>
                             <div style={{ fontSize: 14, color: "#5A6B4A" }}>
@@ -1325,7 +1344,7 @@ export default function GuestHouseApp() {
                               <div style={{ fontSize: 15, fontWeight: 700, color: "#3D5A2E", marginTop: 3 }}>{formatMoney(b.price)}</div>
                             )}
                             {b.notes && <div style={{ fontSize: 13, color: "#9A9580", marginTop: 2 }}>{b.notes}</div>}
-                            {b.comments?.length > 0 && <div style={{ fontSize: 13, color: "#7A8B6A", marginTop: 2 }}>💬 {b.comments.length} {commentsLabel(b.comments.length)}</div>}
+                            {b.comments?.length > 0 && <div style={{ fontSize: 13, color: "#7A8B6A", marginTop: 2, display: "flex", alignItems: "center", gap: 4 }}><IconComment size={13} color="#7A8B6A" /> {b.comments.length} {commentsLabel(b.comments.length)}</div>}
                           </div>
                         );
                       })}
@@ -1352,7 +1371,7 @@ export default function GuestHouseApp() {
                         return (
                           <div key={c.id} style={{ background: "#FAFAF5", borderRadius: 14, padding: "14px 16px", border: "1px solid #DDD8C8", borderLeft: "4px solid #9E4A3A", opacity: 0.85 }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
-                              <div style={{ fontWeight: 700, fontSize: 18, color: "#2D3A2E" }}>{c.status === "unavailable" ? "Недоступно" : (contact?.name || "—")}</div>
+                              <div style={{ fontWeight: 700, fontSize: 18, color: "#2D3A2E" }}>{c.status === "unavailable" ? "Недоступно" : (contact?.name || "?")}</div>
                               <span style={{ padding: "2px 8px", borderRadius: 8, fontSize: 12, fontWeight: 700, background: "#F5E6E0", color: "#9E4A3A", border: "1px solid #9E4A3A" }}>Скасовано</span>
                             </div>
                             <div style={{ fontSize: 14, color: "#5A6B4A" }}>
@@ -1381,9 +1400,9 @@ export default function GuestHouseApp() {
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#FAFAF5", borderTop: "1px solid #DDD8C8", padding: "6px 0 env(safe-area-inset-bottom, 10px)", zIndex: 100 }}>
         <div className="nav-inner" style={{ display: "flex", justifyContent: "space-around" }}>
           {[
-            { id: "calendar", label: "Календар", icon: "📅" },
-            { id: "list", label: "Бронювання", icon: "📋" },
-            { id: "analytics", label: "Аналітика", icon: "📊" },
+            { id: "calendar", label: "Календар", icon: <IconCalendar size={20} /> },
+            { id: "list", label: "Бронювання", icon: <IconClipboard size={20} /> },
+            { id: "analytics", label: "Аналітика", icon: <IconChart size={20} /> },
           ].map(v => (
             <button key={v.id} onClick={() => setView(v.id)} style={{ background: "none", border: "none", padding: "6px 16px", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, opacity: view === v.id ? 1 : 0.4, transition: "opacity 0.15s" }}>
               <span style={{ fontSize: 20 }}>{v.icon}</span>
@@ -1415,7 +1434,7 @@ export default function GuestHouseApp() {
               return (
                 <div key={b.id} onClick={() => setModal({ type: "editBooking", data: b })} style={{ padding: "14px 16px", background: "#F0EDE2", borderRadius: 12, cursor: "pointer", borderLeft: `3px solid ${house?.color || "#ccc"}` }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontWeight: 700, fontSize: 17, color: "#2D3A2E" }}>{b.status === "unavailable" ? "Недоступно" : (contact?.name || "—")}</span>
+                    <span style={{ fontWeight: 700, fontSize: 17, color: "#2D3A2E" }}>{b.status === "unavailable" ? "Недоступно" : (contact?.name || "?")}</span>
                     <Badge status={b.status} small />
                   </div>
                   <div style={{ fontSize: 14, color: "#5A6B4A", marginTop: 4 }}>{displayDate(b.checkIn)} — {displayDate(b.checkOut)}</div>
