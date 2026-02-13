@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { DayPicker } from "react-day-picker";
 import { uk } from "react-day-picker/locale";
-import { loadData, saveData } from "@/app/lib/storage";
+import { useFirestoreData } from "@/app/lib/hooks/useFirestoreData";
 
 const HOUSES = [
   { id: "house1", name: "Аромат хвої", color: "#4A6741", accent: "#6B8F3C", weekday: 13000, weekend: 16000 },
@@ -1119,9 +1119,13 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
 
 // ── MAIN APP ──
 export default function GuestHouseApp() {
-  const [bookings, setBookings] = useState([]);
-  const [contacts, setContacts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    bookings, contacts, loading,
+    saveBooking: fbSaveBooking,
+    deleteBooking: fbDeleteBooking,
+    saveContact: fbSaveContact,
+  } = useFirestoreData();
+
   const [view, setView] = useState("calendar");
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
@@ -1129,29 +1133,9 @@ export default function GuestHouseApp() {
   const [activeHouse, setActiveHouse] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    const data = loadData();
-    setBookings(data.bookings);
-    setContacts(data.contacts);
-    setLoading(false);
-  }, []);
-
-  const persistData = useCallback((b, c) => {
-    saveData(b, c);
-  }, []);
-
-  const updateBookings = (b) => { setBookings(b); persistData(b, contacts); };
-  const saveContact = (c) => {
-    const idx = contacts.findIndex(x => x.id === c.id);
-    const newC = idx >= 0 ? contacts.map(x => x.id === c.id ? c : x) : [...contacts, c];
-    setContacts(newC); persistData(bookings, newC);
-  };
-  const saveBooking = (b) => {
-    const idx = bookings.findIndex(x => x.id === b.id);
-    const newB = idx >= 0 ? bookings.map(x => x.id === b.id ? b : x) : [...bookings, b];
-    updateBookings(newB); setModal(null);
-  };
-  const deleteBooking = (id) => { updateBookings(bookings.filter(b => b.id !== id)); setModal(null); };
+  const saveContact = (c) => { fbSaveContact(c); };
+  const saveBooking = (b) => { fbSaveBooking(b); setModal(null); };
+  const deleteBooking = (id) => { fbDeleteBooking(id); setModal(null); };
 
   const handleDayClick = (dayStr, houseId, dayBookings) => {
     if (dayBookings.length === 1) setModal({ type: "editBooking", data: dayBookings[0] });
