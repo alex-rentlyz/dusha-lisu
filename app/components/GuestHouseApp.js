@@ -788,65 +788,90 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
       {aMode === "month" && <>
 
       {/* ── Summary across all houses ── */}
-      <div style={{ background: "#2D3A2E", borderRadius: 14, padding: "16px 18px", marginBottom: 16 }}>
-        <div style={{ fontSize: 11, color: "#9A9580", fontWeight: 700, marginBottom: 12, fontFamily: "'DM Sans', sans-serif", letterSpacing: 0.5, textTransform: "uppercase" }}>Зведення за місяць</div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
-          <div style={{ background: "rgba(107,143,60,0.15)", borderRadius: 10, padding: "10px 12px", textAlign: "center" }}>
-            <div style={{ fontSize: 22, fontWeight: 800, color: "#6B8F3C", fontFamily: "'Playfair Display', serif" }}>{summary.totalRevenue > 0 ? formatMoney(summary.totalRevenue) : "—"}</div>
-            <div style={{ fontSize: 10, color: "#9A9580", fontWeight: 600, marginTop: 2 }}>Дохід</div>
+      <div style={{ background: "#FAFAF5", borderRadius: 20, padding: "20px", marginBottom: 16, border: "1px solid #E8E2CC" }}>
+        {/* Hero: Revenue + Occupancy ring */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
+          <div style={{ position: "relative", width: 72, height: 72, flexShrink: 0 }}>
+            <svg viewBox="0 0 72 72" style={{ width: 72, height: 72, transform: "rotate(-90deg)" }}>
+              <circle cx="36" cy="36" r="30" fill="none" stroke="#E8E2CC" strokeWidth="6" />
+              <circle cx="36" cy="36" r="30" fill="none" stroke="#6B8F3C" strokeWidth="6"
+                strokeDasharray={`${summary.avgOccupancy * 1.884} 188.4`}
+                strokeLinecap="round" style={{ transition: "stroke-dasharray 0.5s ease" }} />
+            </svg>
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
+              <span style={{ fontSize: 16, fontWeight: 800, color: "#2D3A2E", lineHeight: 1, fontFamily: "'DM Sans', sans-serif" }}>{summary.avgOccupancy}%</span>
+            </div>
           </div>
-          <div style={{ background: "rgba(107,143,60,0.15)", borderRadius: 10, padding: "10px 12px", textAlign: "center" }}>
-            <div style={{ fontSize: 22, fontWeight: 800, color: "#6B8F3C", fontFamily: "'Playfair Display', serif" }}>{summary.avgOccupancy}%</div>
-            <div style={{ fontSize: 10, color: "#9A9580", fontWeight: 600, marginTop: 2 }}>Середня заповненість</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 10, color: "#9A9580", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, fontFamily: "'DM Sans', sans-serif" }}>Загальний дохід</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: "#2D3A2E", fontFamily: "'Playfair Display', serif", lineHeight: 1.1 }}>{summary.totalRevenue > 0 ? formatMoney(summary.totalRevenue) : "—"}</div>
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+        {/* Nights breakdown - horizontal stacked bar */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ display: "flex", height: 8, borderRadius: 6, overflow: "hidden", background: "#E8E2CC" }}>
+            {summary.totalBookedNights > 0 && <div style={{ width: `${(summary.totalBookedNights / (daysInMonth * 3)) * 100}%`, background: "#4A6741", transition: "width 0.3s" }} />}
+            {summary.totalPendingNights > 0 && <div style={{ width: `${(summary.totalPendingNights / (daysInMonth * 3)) * 100}%`, background: "#BFA84F", transition: "width 0.3s" }} />}
+            {summary.totalUnavailableNights > 0 && <div style={{ width: `${(summary.totalUnavailableNights / (daysInMonth * 3)) * 100}%`, background: "#C4816C", transition: "width 0.3s" }} />}
+          </div>
+          <div style={{ display: "flex", gap: 12, marginTop: 8, flexWrap: "wrap" }}>
+            {[
+              { n: summary.totalBookedNights, label: "Заброньовано", color: "#4A6741" },
+              { n: summary.totalPendingNights, label: "Очікується", color: "#BFA84F" },
+              { n: summary.totalFreeNights, label: "Вільно", color: "#C5BFAA" },
+              { n: summary.totalUnavailableNights, label: "Недоступно", color: "#C4816C" },
+            ].map((s, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                <div style={{ width: 8, height: 8, borderRadius: 3, background: s.color, flexShrink: 0 }} />
+                <span style={{ fontSize: 11, color: "#5A6B4A", fontWeight: 600, fontFamily: "'DM Sans', sans-serif" }}>{s.n}</span>
+                <span style={{ fontSize: 10, color: "#9A9580", fontFamily: "'DM Sans', sans-serif" }}>{s.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Key metrics row */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
           {[
-            { n: summary.totalBookedNights, label: "Заброньовано" },
-            { n: summary.totalPendingNights, label: "Очікується" },
-            { n: summary.totalFreeNights, label: "Вільно" },
+            { n: summary.totalGuests, label: "Гостей", icon: "👤" },
+            { n: summary.totalCheckIns, label: "Заїздів", icon: "📅" },
+            { n: `${summary.avgOccupancy}%`, label: "Заповненість", icon: "📊" },
           ].map((s, i) => (
-            <div key={i} style={{ background: "rgba(255,255,255,0.08)", borderRadius: 8, padding: "8px 6px", textAlign: "center" }}>
-              <div style={{ fontSize: 18, fontWeight: 800, color: "#E8E2CC" }}>{s.n}</div>
-              <div style={{ fontSize: 9, color: "#9A9580", fontWeight: 600 }}>{s.label}</div>
+            <div key={i} style={{ background: "#F0EDE2", borderRadius: 12, padding: "12px 8px", textAlign: "center" }}>
+              <div style={{ fontSize: 14, marginBottom: 4 }}>{s.icon}</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#2D3A2E", fontFamily: "'DM Sans', sans-serif", lineHeight: 1 }}>{s.n}</div>
+              <div style={{ fontSize: 9, color: "#9A9580", fontWeight: 600, marginTop: 4, textTransform: "uppercase", letterSpacing: 0.3 }}>{s.label}</div>
             </div>
           ))}
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-around", marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-          {[
-            { n: summary.totalGuests, label: "Гостей" },
-            { n: summary.totalCheckIns, label: "Заїздів" },
-            { n: summary.totalUnavailableNights, label: "Недоступно" },
-          ].map((s, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: "#E8E2CC" }}>{s.n}</div>
-              <div style={{ fontSize: 9, color: "#9A9580", fontWeight: 600 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Revenue comparison mini-chart */}
-        <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-          <div style={{ fontSize: 10, color: "#9A9580", fontWeight: 600, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.4 }}>Дохід по будинках</div>
-          {allStats.map(({ house, stats }) => (
-            <div key={house.id} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-              <div style={{ width: 70, fontSize: 10, color: "#C5BFAA", fontWeight: 600, flexShrink: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{house.name.split(" ")[0]}</div>
-              <div style={{ flex: 1, height: 18, background: "rgba(255,255,255,0.06)", borderRadius: 6, overflow: "hidden", position: "relative" }}>
-                <div style={{
-                  width: summary.totalRevenue > 0 ? `${(stats.revenue / summary.totalRevenue) * 100}%` : "0%",
-                  height: "100%", borderRadius: 6,
-                  background: `linear-gradient(90deg, ${house.color}, ${house.accent})`,
-                  transition: "width 0.3s"
-                }} />
+        {/* Revenue per house */}
+        <div>
+          <div style={{ fontSize: 10, color: "#9A9580", fontWeight: 700, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.5, fontFamily: "'DM Sans', sans-serif" }}>Дохід по будинках</div>
+          {allStats.map(({ house, stats }) => {
+            const pct = summary.totalRevenue > 0 ? (stats.revenue / summary.totalRevenue) * 100 : 0;
+            return (
+              <div key={house.id} style={{ marginBottom: 10 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 5, background: house.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#2D3A2E", fontFamily: "'DM Sans', sans-serif" }}>{house.name}</span>
+                  </div>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: "#2D3A2E", fontFamily: "'DM Sans', sans-serif" }}>
+                    {stats.revenue > 0 ? formatMoney(stats.revenue) : "—"}
+                  </span>
+                </div>
+                <div style={{ height: 6, background: "#E8E2CC", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{
+                    width: `${pct}%`, height: "100%", borderRadius: 4,
+                    background: `linear-gradient(90deg, ${house.color}, ${house.accent})`,
+                    transition: "width 0.4s ease"
+                  }} />
+                </div>
               </div>
-              <div style={{ width: 75, textAlign: "right", fontSize: 11, fontWeight: 700, color: "#E8E2CC", flexShrink: 0 }}>
-                {stats.revenue > 0 ? formatMoney(stats.revenue) : "—"}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
