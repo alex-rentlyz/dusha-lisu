@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import "react-day-picker/style.css";
+
+/* react-day-picker theme overrides — must come after the library CSS */
+.rdp-root {
+  --rdp-accent-color: #3D5A2E;
+  --rdp-accent-background-color: #E8F0E4;
+  --rdp-day-height: 2.6rem;
+  --rdp-day-width: 2.6rem;
+  --rdp-day_button-border-radius: 8px;
+  --rdp-day_button-height: 2.4rem;
+  --rdp-day_button-width: 2.4rem;
+  --rdp-today-color: #6B5D1C;
+  --rdp-disabled-opacity: 0.45;
+  --rdp-outside-opacity: 0.3;
+  --rdp-range_start-color: #FAFAF5;
+  --rdp-range_start-date-background-color: #3D5A2E;
+  --rdp-range_end-color: #FAFAF5;
+  --rdp-range_end-date-background-color: #3D5A2E;
+  --rdp-range_middle-background-color: #E8F0E4;
+  --rdp-range_middle-color: #2D3D28;
+  --rdp-selected-border: 2px solid #3D5A2E;
+  --rdp-selected-font: inherit;
+  --rdp-nav_button-height: 2rem;
+  --rdp-nav_button-width: 2rem;
+  --rdp-nav-height: 2.75rem;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.rdp-root {
+  width: 100%;
+  max-width: 100%;
+}
+
+.rdp-months {
+  width: 100%;
+  max-width: 100%;
+}
+
+.rdp-month {
+  width: 100%;
+}
+
+.rdp-month_grid {
+  width: 100%;
+}
+
+.rdp-weekdays {
+  width: 100%;
+}
+
+.rdp-weeks {
+  width: 100%;
+}
+
+.rdp-week {
+  width: 100%;
+}
+
+.rdp-day {
+  width: calc(100% / 7);
+}
+
+.rdp-weekday {
+  width: calc(100% / 7);
+  font-size: 11px;
+  font-weight: 700;
+  color: #9A9580;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.rdp-month_caption {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  color: #2D3A2E;
+  padding: 8px 4px;
+}
+
+.rdp-day_button {
+  font-size: 13px;
+  font-weight: 500;
+  color: #5A6B4A;
+  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+  max-width: 100%;
+}
+
+.rdp-today:not(.rdp-range_start):not(.rdp-range_end):not(.rdp-range_middle) .rdp-day_button {
+  font-weight: 800;
+  color: #6B5D1C;
+}
+
+/* Weekend days (Fri–Sun) — red-ish to indicate weekend pricing */
+.rdp-weekend:not(.rdp-range_start):not(.rdp-range_end):not(.rdp-disabled) .rdp-day_button {
+  color: #9E4A3A;
+}
+
+.rdp-weekday:nth-child(5),
+.rdp-weekday:nth-child(6),
+.rdp-weekday:nth-child(7) {
+  color: #9E4A3A;
+}
+
+.rdp-disabled .rdp-day_button {
+  color: #C5BFAA;
+  text-decoration: line-through;
+  text-decoration-color: #9E4A3A80;
+}
+
+.rdp-chevron {
+  fill: #5A6B4A;
+}
+
+.rdp-range_start .rdp-day_button,
+.rdp-range_end .rdp-day_button {
+  font-weight: 800;
+}
+
+.rdp-range_middle .rdp-day_button {
+  font-weight: 600;
+}
+
+.rdp-nav {
+  gap: 4px;
+}
+
+.rdp-button_previous,
+.rdp-button_next {
+  background: #F0EDE2;
+  border: 1px solid #DDD8C8;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.rdp-button_previous:hover,
+.rdp-button_next:hover {
+  background: #E8E2CC;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUpCenter {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  overscroll-behavior: none;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* ── Responsive layout ── */
+
+.app-container {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.header-inner {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.nav-inner {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.calendar-houses {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Modal — bottom-sheet on mobile */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,28,20,0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.15s ease;
+}
+
+.modal-content {
+  background: #FAFAF5;
+  width: 100%;
+  max-width: 540px;
+  max-height: 92vh;
+  overflow: auto;
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
+  animation: slideUp 0.25s ease;
+}
+
+.modal-handle {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .app-container {
+    max-width: 1100px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .header-inner {
+    max-width: 1100px;
+  }
+
+  .nav-inner {
+    max-width: 1100px;
+  }
+
+  .calendar-houses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  /* Modal — centered dialog on desktop */
+  .modal-overlay {
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-content {
+    max-width: 560px;
+    max-height: 85vh;
+    border-radius: 22px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: fadeIn 0.2s ease;
+  }
+
+  .modal-handle {
+    display: none;
+  }
+
+  .list-view {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .analytics-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  .analytics-total {
+    grid-column: 1 / -1;
+  }
+}
