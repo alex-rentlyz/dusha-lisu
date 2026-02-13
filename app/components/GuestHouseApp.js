@@ -75,6 +75,59 @@ function PineTree({ size = 24, color = "#3D5A2E" }) {
   );
 }
 
+/* House 1: Аромат хвої — A-frame з прибудовою справа */
+function IconHouse1({ size = 20, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 28" fill="none">
+      <polygon points="2,22 11,4 20,22" stroke={color} strokeWidth="1.8" strokeLinejoin="round" fill="none"/>
+      <rect x="7" y="14" width="8" height="8" rx="0.5" stroke={color} strokeWidth="1.2" fill="none"/>
+      <line x1="11" y1="14" x2="11" y2="22" stroke={color} strokeWidth="1"/>
+      <polygon points="7,14 11,10 15,14" stroke={color} strokeWidth="1" fill="none"/>
+      <rect x="18" y="12" width="12" height="10" rx="1" stroke={color} strokeWidth="1.5" fill="none"/>
+      <rect x="22" y="15" width="4" height="4" rx="0.5" stroke={color} strokeWidth="1" fill="none"/>
+      <line x1="18" y1="12" x2="30" y2="12" stroke={color} strokeWidth="1.5"/>
+      <rect x="1" y="22" width="30" height="2" rx="0.5" fill={color} opacity="0.3"/>
+    </svg>
+  );
+}
+
+/* House 2: Сонячна оселя — компактний A-frame з чаном */
+function IconHouse2({ size = 20, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+      <polygon points="4,24 14,4 24,24" stroke={color} strokeWidth="1.8" strokeLinejoin="round" fill="none"/>
+      <polygon points="9,16 14,10 19,16" stroke={color} strokeWidth="1" fill="none"/>
+      <rect x="10" y="16" width="8" height="8" rx="0.5" stroke={color} strokeWidth="1.2" fill="none"/>
+      <line x1="14" y1="16" x2="14" y2="24" stroke={color} strokeWidth="1"/>
+      <line x1="10" y1="20" x2="18" y2="20" stroke={color} strokeWidth="0.8"/>
+      <ellipse cx="6" cy="23" rx="3.5" ry="2" stroke={color} strokeWidth="1.2" fill="none"/>
+      <rect x="3" y="24" width="22" height="1.5" rx="0.5" fill={color} opacity="0.3"/>
+    </svg>
+  );
+}
+
+/* House 3: Лісова тиша — плоский модерн будинок */
+function IconHouse3({ size = 20, color = "currentColor" }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 24" fill="none">
+      <rect x="2" y="6" width="28" height="14" rx="1.5" stroke={color} strokeWidth="1.8" fill="none"/>
+      <rect x="1" y="4" width="30" height="3" rx="1" stroke={color} strokeWidth="1.5" fill="none"/>
+      <rect x="6" y="10" width="5" height="7" rx="0.5" stroke={color} strokeWidth="1.2" fill="none"/>
+      <rect x="14" y="10" width="5" height="7" rx="0.5" stroke={color} strokeWidth="1.2" fill="none"/>
+      <rect x="22" y="10" width="5" height="4" rx="0.5" stroke={color} strokeWidth="1" fill="none"/>
+      <ellipse cx="6" cy="19" rx="3" ry="1.8" stroke={color} strokeWidth="1.2" fill="none"/>
+      <rect x="1" y="20" width="30" height="1.5" rx="0.5" fill={color} opacity="0.3"/>
+    </svg>
+  );
+}
+
+function HouseIcon({ houseId, size = 16, color = "currentColor" }) {
+  if (houseId === "house1") return <IconHouse1 size={size} color={color} />;
+  if (houseId === "house2") return <IconHouse2 size={size} color={color} />;
+  if (houseId === "house3") return <IconHouse3 size={size} color={color} />;
+  return <PineTree size={size} color={color} />;
+}
+
 function IconUser({ size = 17, color = "currentColor" }) {
   return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
 }
@@ -922,7 +975,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
         <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", marginBottom: 14 }}>
           <div style={{ padding: "10px 14px", background: house.color, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <PineTree size={16} color="rgba(255,255,255,0.7)" />
+              <HouseIcon houseId={house.id} size={20} color="rgba(255,255,255,0.8)" />
               <span style={{ color: "#fff", fontWeight: 700, fontSize: 17, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{house.name}</span>
             </div>
             <span style={{ background: "rgba(255,255,255,0.2)", padding: "2px 10px", borderRadius: 12, fontSize: 13, color: "#fff", fontWeight: 700 }}>
@@ -1100,7 +1153,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
         <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", marginBottom: 14 }}>
           <div style={{ padding: "10px 14px", background: house.color, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <PineTree size={16} color="rgba(255,255,255,0.7)" />
+              <HouseIcon houseId={house.id} size={20} color="rgba(255,255,255,0.8)" />
               <span style={{ color: "#fff", fontWeight: 700, fontSize: 17, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{house.name}</span>
             </div>
             <span style={{ background: "rgba(255,255,255,0.2)", padding: "2px 10px", borderRadius: 12, fontSize: 13, color: "#fff", fontWeight: 700 }}>
@@ -1246,10 +1299,10 @@ export default function GuestHouseApp() {
                 </div>
                 <button onClick={nextMonth} style={{ background: "#FAFAF5", border: "1px solid #DDD8C8", borderRadius: 10, width: 42, height: 42, fontSize: 18, cursor: "pointer", color: "#5A6B4A" }}>›</button>
               </div>
-              <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 10, scrollbarWidth: "none" }}>
-                <button onClick={() => setActiveHouse(null)} style={{ padding: "7px 16px", borderRadius: 20, fontSize: 14, fontWeight: 700, border: !activeHouse ? "2px solid #2D3A2E" : "1.5px solid #C5BFAA", background: !activeHouse ? "#2D3A2E" : "#FAFAF5", color: !activeHouse ? "#E8E2CC" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>Всі</button>
+              <div style={{ display: "flex", gap: 6, paddingBottom: 10 }}>
+                <button onClick={() => setActiveHouse(null)} style={{ flex: 1, minWidth: 0, padding: "7px 4px", borderRadius: 20, fontSize: 13, fontWeight: 700, border: !activeHouse ? "2px solid #2D3A2E" : "1.5px solid #C5BFAA", background: !activeHouse ? "#2D3A2E" : "#FAFAF5", color: !activeHouse ? "#E8E2CC" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", height: 44, display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", lineHeight: 1.2 }}>Всі</button>
                 {HOUSES.map(h => (
-                  <button key={h.id} onClick={() => setActiveHouse(activeHouse === h.id ? null : h.id)} style={{ padding: "7px 16px", borderRadius: 20, fontSize: 14, fontWeight: 700, border: activeHouse === h.id ? `2px solid ${h.color}` : "1.5px solid #C5BFAA", background: activeHouse === h.id ? h.color : "#FAFAF5", color: activeHouse === h.id ? "#fff" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>{h.name}</button>
+                  <button key={h.id} onClick={() => setActiveHouse(activeHouse === h.id ? null : h.id)} style={{ flex: 1, minWidth: 0, padding: "7px 4px", borderRadius: 20, fontSize: 13, fontWeight: 700, border: activeHouse === h.id ? `2px solid ${h.color}` : "1.5px solid #C5BFAA", background: activeHouse === h.id ? h.color : "#FAFAF5", color: activeHouse === h.id ? "#fff" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", height: 44, display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", lineHeight: 1.2 }}>{h.name}</button>
                 ))}
               </div>
               <div className="calendar-houses">
@@ -1257,7 +1310,7 @@ export default function GuestHouseApp() {
                   <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8" }}>
                     <div style={{ padding: "10px 14px", background: house.color, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <PineTree size={16} color="rgba(255,255,255,0.7)" />
+                        <HouseIcon houseId={house.id} size={20} color="rgba(255,255,255,0.8)" />
                         <span style={{ color: "#fff", fontWeight: 700, fontSize: 17, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{house.name}</span>
                       </div>
                       <span style={{ background: "rgba(255,255,255,0.2)", padding: "2px 10px", borderRadius: 12, fontSize: 13, color: "#fff", fontWeight: 600 }}>
