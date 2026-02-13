@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { ensureAuth } from "../firebase/auth";
 import { subscribeToBookings, saveBooking as fbSaveBooking, removeBooking } from "../services/bookingService";
 import { subscribeToContacts, saveContact as fbSaveContact } from "../services/contactService";
+import { subscribeToCancellations, saveCancellation } from "../services/cancellationService";
 import { migrateFromLocalStorage } from "../services/migrationService";
 import { loadData, saveData } from "../storage";
 
@@ -32,6 +33,7 @@ function isFirebaseConfigured() {
 export function useFirestoreData() {
   const [bookings, setBookings] = useState([]);
   const [contacts, setContacts] = useState([]);
+  const [cancellations, setCancellations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const unsubscribers = useRef([]);
@@ -67,7 +69,11 @@ export function useFirestoreData() {
           if (mounted) setContacts(data);
         });
 
-        unsubscribers.current = [unsubBookings, unsubContacts];
+        const unsubCancellations = subscribeToCancellations((data) => {
+          if (mounted) setCancellations(data);
+        });
+
+        unsubscribers.current = [unsubBookings, unsubContacts, unsubCancellations];
 
         // Loading is set to false after first snapshot arrives
         // Use a small delay to ensure at least one snapshot is received
@@ -120,6 +126,15 @@ export function useFirestoreData() {
   const deleteBooking = useCallback(async (id) => {
     if (!isFirebaseConfigured()) {
       setBookings((prev) => {
+        const booking = prev.find((b) => b.id === id);
+        if (booking) {
+          setCancellations((c) => [...c, {
+            ...booking,
+            bookingId: id,
+            cancelMonth: booking.checkIn ? booking.checkIn.substring(0, 7) : "",
+            cancelledAtISO: new Date().toISOString(),
+          }]);
+        }
         const next = prev.filter((b) => b.id !== id);
         setContacts((c) => { saveData(next, c); return c; });
         return next;
@@ -127,12 +142,18 @@ export function useFirestoreData() {
       return;
     }
     try {
+      // 1. Log cancellation before deleting
+      const booking = bookings.find((b) => b.id === id);
+      if (booking) {
+        await saveCancellation(booking);
+      }
+      // 2. Hard-delete the booking
       await removeBooking(id);
     } catch (err) {
       console.error("Failed to delete booking:", err);
       setError(err);
     }
-  }, []);
+  }, [bookings]);
 
   const saveContact = useCallback(async (contact) => {
     if (!isFirebaseConfigured()) {
@@ -155,6 +176,7 @@ export function useFirestoreData() {
   return {
     bookings,
     contacts,
+    cancellations,
     loading,
     error,
     saveBooking,
