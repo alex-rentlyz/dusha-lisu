@@ -489,11 +489,12 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
             const active = form.status === s.value;
             return (
               <button key={s.value} onClick={() => set("status", s.value)} style={{
-                flex: 1, padding: "10px 6px", borderRadius: 10, fontSize: 14, fontWeight: 700,
+                flex: 1, padding: "10px 6px", borderRadius: 10, fontSize: 13, fontWeight: 700,
                 border: active ? `2px solid ${sc.border}` : "1.5px solid #DDD8C8",
                 background: active ? sc.bg : "#fff", color: active ? sc.text : "#7A8B6A",
-                cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", transition: "all 0.15s"
-              }}>{s.icon} {s.label}</button>
+                cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", transition: "all 0.15s",
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+              }}><span style={{ fontSize: 23 }}>{s.icon}</span> {s.label}</button>
             );
           })}
         </div>
@@ -1385,6 +1386,7 @@ function Settings({ housePrices, onSave }) {
 
 // ── MAIN APP ──
 export default function GuestHouseApp() {
+  const [authChecked, setAuthChecked] = useState(false);
   const [authed, setAuthed] = useState(false);
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState(false);
@@ -1407,6 +1409,7 @@ export default function GuestHouseApp() {
 
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("dusha_auth") === "1") setAuthed(true);
+    setAuthChecked(true);
   }, []);
 
   const handleLogin = () => {
@@ -1419,6 +1422,15 @@ export default function GuestHouseApp() {
       setPin("");
     }
   };
+
+  if (!authChecked) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
+      <div style={{ textAlign: "center" }}>
+        <PineTree size={48} color="#6B8F3C" />
+        <div style={{ fontSize: 20, color: "#D4CCAA", marginTop: 10, letterSpacing: 0.5 }}>Душа лісу</div>
+      </div>
+    </div>
+  );
 
   if (!authed) return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
