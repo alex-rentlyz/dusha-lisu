@@ -824,7 +824,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
   }, [bookings, aYear, yearlyData]);
 
   const StatRow = ({ label, value, color, bold }) => (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: "1px solid #E0DBC8" }}>
+    <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #E0DBC8" }}>
       <span style={{ fontSize: 14, color: "#5A6B4A", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{label}</span>
       <span style={{ fontSize: 14, fontWeight: bold ? 800 : 600, color: color || "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{value}</span>
     </div>
@@ -925,9 +925,9 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
             { n: summary.totalPendingNights, label: "Очікується", color: "#BFA84F" },
             { n: summary.totalFreeNights, label: "Вільно", color: "#C5BFAA" },
             { n: summary.totalUnavailableNights, label: "Недоступно", color: "#C4816C" },
-          ];
+          ].sort((a, b) => b.n - a.n);
           const total = pieData.reduce((s, d) => s + d.n, 0) || 1;
-          const cx = 50, cy = 50, r = 38, stroke = 12;
+          const cx = 50, cy = 50, r = 38, stroke = 18;
           const circumference = 2 * Math.PI * r;
           let offset = circumference * 0.25;
           const segments = pieData.filter(d => d.n > 0).map(d => {
@@ -943,13 +943,13 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
               <div style={{ fontSize: 12, color: "#9A9580", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>Загальний дохід</div>
               <div style={{ fontSize: 28, fontWeight: 800, color: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", lineHeight: 1.1, marginBottom: 16 }}>{summary.totalRevenue > 0 ? formatMoney(summary.totalRevenue) : "—"}</div>
               <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                <div style={{ width: 100, height: 100, flexShrink: 0 }}>
-                  <svg viewBox="0 0 100 100" style={{ width: 100, height: 100, transform: "rotate(-90deg)" }}>
+                <div style={{ width: 150, height: 150, flexShrink: 0 }}>
+                  <svg viewBox="0 0 100 100" style={{ width: 150, height: 150, transform: "rotate(-90deg)" }}>
                     <circle cx={cx} cy={cy} r={r} fill="none" stroke="#E8E2CC" strokeWidth={stroke} />
                     {segments.map(s => (
                       <circle key={s.label} cx={cx} cy={cy} r={r} fill="none" stroke={s.color} strokeWidth={stroke}
                         strokeDasharray={s.dasharray} strokeDashoffset={s.dashoffset}
-                        strokeLinecap="round" style={{ transition: "stroke-dasharray 0.5s, stroke-dashoffset 0.5s" }} />
+                        style={{ transition: "stroke-dasharray 0.5s, stroke-dashoffset 0.5s" }} />
                     ))}
                   </svg>
                 </div>
@@ -1025,10 +1025,10 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
               {stats.occupancy}%
             </span>
           </div>
-          <div style={{ padding: 14 }}>
+          <div style={{ padding: 16 }}>
             <OccupancyBar occupancy={stats.occupancy} color={house.color} accent={house.accent} />
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, margin: "12px 0" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, margin: "14px 0" }}>
               <div style={{ background: "#F0EDE2", borderRadius: 10, padding: "10px 12px", textAlign: "center" }}>
                 <div style={{ fontSize: 18, fontWeight: 800, color: "#3D5A2E" }}>{stats.revenue > 0 ? formatMoney(stats.revenue) : "—"}</div>
                 <div style={{ fontSize: 12, color: "#7A8B6A", fontWeight: 600 }}>Дохід</div>
@@ -1039,7 +1039,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
               </div>
             </div>
 
-            <div style={{ marginBottom: 12 }}>
+            <div style={{ marginBottom: 16 }}>
               <StatRow label="Заброньовано ночей" value={stats.bookedNights} color="#4A6741" />
               <StatRow label="Очікується ночей" value={stats.pendingNights} color="#8B7D3C" />
               <StatRow label="Недоступно ночей" value={stats.unavailableNights} color="#9E4A3A" />
@@ -1048,7 +1048,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
               <StatRow label="Кількість заїздів" value={stats.checkIns} bold />
             </div>
 
-            <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <div style={{ flex: 1, background: "#F0EDE2", borderRadius: 8, padding: "6px 10px", textAlign: "center" }}>
                 <div style={{ fontSize: 12, color: "#7A8B6A", fontWeight: 600 }}>Пн–Чт</div>
                 <div style={{ fontSize: 15, fontWeight: 800, color: "#3D5A2E" }}>{formatMoney(house.weekday)}</div>
@@ -1061,12 +1061,12 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
 
             {stats.bookingDetails.length > 0 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#5A6B4A", letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 6, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>Бронювання</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#5A6B4A", letterSpacing: 0.4, textTransform: "uppercase", marginBottom: 10, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>Бронювання</div>
                 {stats.bookingDetails.map(b => {
                   const sc = STATUS_COLORS[b.status];
                   return (
                     <div key={b.id} style={{
-                      padding: "8px 10px", background: sc.bg, borderRadius: 8, marginBottom: 4,
+                      padding: "8px 10px", background: sc.bg, borderRadius: 8, marginBottom: 6,
                       borderLeft: `3px solid ${sc.border}`, fontSize: 14, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif"
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -1204,10 +1204,10 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
               {occupancy}%
             </span>
           </div>
-          <div style={{ padding: 14 }}>
+          <div style={{ padding: 16 }}>
             <OccupancyBar occupancy={occupancy} color={house.color} accent={house.accent} />
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, margin: "12px 0" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, margin: "14px 0" }}>
               <div style={{ background: "#F0EDE2", borderRadius: 10, padding: "10px 12px", textAlign: "center" }}>
                 <div style={{ fontSize: 18, fontWeight: 800, color: "#3D5A2E" }}>{revenue > 0 ? formatMoney(revenue) : "—"}</div>
                 <div style={{ fontSize: 12, color: "#7A8B6A", fontWeight: 600 }}>Дохід</div>
@@ -1218,7 +1218,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
               </div>
             </div>
 
-            <div style={{ marginBottom: 12 }}>
+            <div style={{ marginBottom: 16 }}>
               <StatRow label="Заброньовано ночей" value={bookedNights} color="#4A6741" />
               <StatRow label="Очікується ночей" value={pendingNights} color="#8B7D3C" />
               <StatRow label="Недоступно ночей" value={unavailableNights} color="#9E4A3A" />
@@ -1719,7 +1719,7 @@ export default function GuestHouseApp() {
             { id: "calendar", label: "Календар" },
             { id: "list", label: "Бронювання" },
             { id: "analytics", label: "Аналітика" },
-            { id: "settings", label: "Налашт." },
+            { id: "settings", label: "Налаштування" },
           ].map(v => {
             const active = view === v.id;
             const clr = active ? "#6B8F3C" : "#5A6B4A";
