@@ -917,7 +917,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
       {aMode === "month" && <>
 
       {/* ── Summary across all houses ── */}
-      <div style={{ background: "#FAFAF5", borderRadius: 20, padding: "20px", marginBottom: 16, border: "1px solid #E8E2CC" }}>
+      <div style={{ background: "#FAFAF5", borderRadius: 20, padding: "20px", marginBottom: 16, border: "1px solid #E8E2CC", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         {/* Hero: Donut chart + legend */}
         {(() => {
           const pieData = [
@@ -999,9 +999,9 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
                     {stats.revenue > 0 ? formatMoney(stats.revenue) : "—"}
                   </span>
                 </div>
-                <div style={{ height: 6, background: "#E8E2CC", borderRadius: 4, overflow: "hidden" }}>
+                <div style={{ height: 12, background: "#E8E2CC", borderRadius: 6, overflow: "hidden" }}>
                   <div style={{
-                    width: `${pct}%`, height: "100%", borderRadius: 4,
+                    width: `${pct}%`, height: "100%", borderRadius: 6,
                     background: `linear-gradient(90deg, ${house.color}, ${house.accent})`,
                     transition: "width 0.4s ease"
                   }} />
@@ -1015,7 +1015,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
       {/* ── Per-house details ── */}
       <div className="analytics-view">
       {allStats.map(({ house, stats }) => (
-        <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", marginBottom: 14 }}>
+        <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", marginBottom: 14 }}>
           <div style={{ padding: "10px 14px", background: house.color, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <HouseIcon houseId={house.id} size={20} color="rgba(255,255,255,0.8)" />
@@ -1101,15 +1101,15 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
       {aMode === "year" && <>
 
       {/* ── Yearly summary card ── */}
-      <div style={{ background: "linear-gradient(135deg, #2D3A2E 0%, #1A251A 100%)", borderRadius: 16, padding: "20px 18px", marginBottom: 16, border: "1px solid #3D5A2E44" }}>
+      <div style={{ background: "#FAFAF5", borderRadius: 20, padding: "20px 18px", marginBottom: 16, border: "1px solid #E8E2CC", boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
           <div>
-            <div style={{ fontSize: 13, color: "#9A9580", fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>Зведення за рік</div>
-            <div style={{ fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", fontSize: 22, color: "#E8E2CC", marginTop: 2 }}>{aYear}</div>
+            <div style={{ fontSize: 13, color: "#7A8B6A", fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>Зведення за рік</div>
+            <div style={{ fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", fontSize: 22, color: "#2D3A2E", fontWeight: 800, marginTop: 2 }}>{aYear}</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 24, fontWeight: 800, color: "#6B8F3C", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{yearTotals.rev > 0 ? formatMoney(yearTotals.rev) : "—"}</div>
-            <div style={{ fontSize: 12, color: "#9A9580", fontWeight: 600 }}>Загальний дохід</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "#4A6741", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{yearTotals.rev > 0 ? formatMoney(yearTotals.rev) : "—"}</div>
+            <div style={{ fontSize: 12, color: "#7A8B6A", fontWeight: 600 }}>Загальний дохід</div>
           </div>
         </div>
 
@@ -1121,24 +1121,25 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
             { n: yearTotals.guests, label: "Гостей" },
             { n: `${yearTotals.avgOcc}%`, label: "Заповн." },
           ].map((s, i) => (
-            <div key={i} style={{ background: "rgba(107,143,60,0.12)", borderRadius: 10, padding: "10px 6px", textAlign: "center" }}>
-              <div style={{ fontSize: 17, fontWeight: 800, color: "#E8E2CC", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{s.n}</div>
-              <div style={{ fontSize: 11, color: "#9A9580", fontWeight: 600, marginTop: 2 }}>{s.label}</div>
+            <div key={i} style={{ background: "#F0EDE2", borderRadius: 10, padding: "10px 6px", textAlign: "center" }}>
+              <div style={{ fontSize: 17, fontWeight: 800, color: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{s.n}</div>
+              <div style={{ fontSize: 11, color: "#7A8B6A", fontWeight: 600, marginTop: 2 }}>{s.label}</div>
             </div>
           ))}
         </div>
 
         {/* Revenue bar chart */}
-        <div style={{ marginBottom: 18 }}>
-          <div style={{ fontSize: 12, color: "#9A9580", fontWeight: 600, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.4 }}>Дохід по місяцях</div>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 100 }}>
+        <div style={{ marginBottom: 24, paddingTop: 6 }}>
+          <div style={{ fontSize: 12, color: "#7A8B6A", fontWeight: 600, marginBottom: 14, textTransform: "uppercase", letterSpacing: 0.4 }}>Дохід по місяцях</div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 100, padding: "0 4px" }}>
             {yearlyData.map((d, i) => {
               const h = maxMonthRev > 0 ? Math.max((d.totalRev / maxMonthRev) * 88, d.totalRev > 0 ? 4 : 0) : 0;
               return (
                 <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, cursor: "pointer" }} onClick={() => { setAMonth(i); setAMode("month"); }}>
                   <div style={{
-                    width: "100%", height: h, borderRadius: 4,
-                    background: "rgba(107,143,60,0.35)",
+                    width: "70%", height: h, borderRadius: 4,
+                    background: "#6B8F3C",
+                    opacity: 0.7,
                     transition: "all 0.2s",
                     minWidth: 0,
                   }} />
@@ -1150,15 +1151,16 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
         </div>
 
         {/* Occupancy bar chart */}
-        <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 12, color: "#9A9580", fontWeight: 600, marginBottom: 10, textTransform: "uppercase", letterSpacing: 0.4 }}>Заповненість по місяцях</div>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 80 }}>
+        <div style={{ marginBottom: 24, paddingTop: 6 }}>
+          <div style={{ fontSize: 12, color: "#7A8B6A", fontWeight: 600, marginBottom: 14, textTransform: "uppercase", letterSpacing: 0.4 }}>Заповненість по місяцях</div>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 80, padding: "0 4px" }}>
             {yearlyData.map((d, i) => (
               <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2, cursor: "pointer" }} onClick={() => { setAMonth(i); setAMode("month"); }}>
-                <div style={{ fontSize: 10, color: d.avgOcc > 0 ? "#E8E2CC" : "transparent", fontWeight: 700 }}>{d.avgOcc}%</div>
+                <div style={{ fontSize: 10, color: d.avgOcc > 0 ? "#5A6B4A" : "transparent", fontWeight: 700 }}>{d.avgOcc}%</div>
                 <div style={{
-                  width: "100%", height: Math.max(d.avgOcc * 0.6, d.avgOcc > 0 ? 3 : 0), borderRadius: 4,
-                  background: "rgba(191,168,79,0.35)",
+                  width: "70%", height: Math.max(d.avgOcc * 0.6, d.avgOcc > 0 ? 3 : 0), borderRadius: 4,
+                  background: "#BFA84F",
+                  opacity: 0.6,
                   transition: "all 0.2s",
                 }} />
                 <div style={{ fontSize: 10, color: "#7A8B6A", fontWeight: 500 }}>{d.month}</div>
@@ -1168,20 +1170,20 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
         </div>
 
         {/* Revenue per house mini-chart */}
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 14 }}>
-          <div style={{ fontSize: 12, color: "#9A9580", fontWeight: 600, marginBottom: 8, textTransform: "uppercase", letterSpacing: 0.4 }}>Дохід по будинках</div>
+        <div style={{ borderTop: "1px solid #E0DBC8", paddingTop: 20 }}>
+          <div style={{ fontSize: 12, color: "#7A8B6A", fontWeight: 600, marginBottom: 14, textTransform: "uppercase", letterSpacing: 0.4 }}>Дохід по будинках</div>
           {yearlyHouseStats.map(({ house, revenue }) => (
-            <div key={house.id} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-              <div style={{ width: 70, fontSize: 12, color: "#C5BFAA", fontWeight: 600, flexShrink: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{house.name.split(" ")[0]}</div>
-              <div style={{ flex: 1, height: 18, background: "rgba(255,255,255,0.06)", borderRadius: 6, overflow: "hidden" }}>
+            <div key={house.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <div style={{ width: 70, fontSize: 13, color: "#5A6B4A", fontWeight: 600, flexShrink: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{house.name.split(" ")[0]}</div>
+              <div style={{ flex: 1, height: 26, background: "#F0EDE2", borderRadius: 8, overflow: "hidden" }}>
                 <div style={{
                   width: yearTotals.rev > 0 ? `${(revenue / yearTotals.rev) * 100}%` : "0%",
-                  height: "100%", borderRadius: 6,
+                  height: "100%", borderRadius: 8,
                   background: `linear-gradient(90deg, ${house.color}, ${house.accent})`,
                   transition: "width 0.3s"
                 }} />
               </div>
-              <div style={{ width: 75, textAlign: "right", fontSize: 13, fontWeight: 700, color: "#E8E2CC", flexShrink: 0 }}>
+              <div style={{ width: 80, textAlign: "right", fontSize: 14, fontWeight: 700, color: "#2D3A2E", flexShrink: 0 }}>
                 {revenue > 0 ? formatMoney(revenue) : "—"}
               </div>
             </div>
@@ -1192,7 +1194,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
       {/* ── Per-house yearly details ── */}
       <div className="analytics-view">
       {yearlyHouseStats.map(({ house, revenue, bookedNights, pendingNights, unavailableNights, freeNights, weekendNights, weekdayNights, checkIns, guests, occupancy, avgPerNight, daysInYear }) => (
-        <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", marginBottom: 14 }}>
+        <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", marginBottom: 14 }}>
           <div style={{ padding: "10px 14px", background: house.color, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <HouseIcon houseId={house.id} size={20} color="rgba(255,255,255,0.8)" />
@@ -1226,16 +1228,16 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
             </div>
 
             {/* Per-month revenue mini-chart for this house */}
-            <div style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#5A6B4A", letterSpacing: 0.4, textTransform: "uppercase", marginBottom: 6, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>Дохід по місяцях</div>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 48 }}>
+            <div style={{ marginBottom: 8, marginTop: 4 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#5A6B4A", letterSpacing: 0.4, textTransform: "uppercase", marginBottom: 12, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>Дохід по місяцях</div>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 70 }}>
                 {yearlyData.map((d, i) => {
                   const hRev = d[`rev_${house.id}`] || 0;
                   const maxHRev = Math.max(...yearlyData.map(dd => dd[`rev_${house.id}`] || 0), 1);
-                  const barH = maxHRev > 0 ? Math.max((hRev / maxHRev) * 40, hRev > 0 ? 3 : 0) : 0;
+                  const barH = maxHRev > 0 ? Math.max((hRev / maxHRev) * 58, hRev > 0 ? 3 : 0) : 0;
                   return (
-                    <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2, cursor: "pointer" }} onClick={() => { setAMonth(i); setAMode("month"); }}>
-                      <div style={{ width: "100%", height: barH, borderRadius: 3, background: house.color, opacity: 0.5, transition: "all 0.2s" }} />
+                    <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, cursor: "pointer" }} onClick={() => { setAMonth(i); setAMode("month"); }}>
+                      <div style={{ width: "100%", height: barH, borderRadius: 4, background: house.color, opacity: 0.6, transition: "all 0.2s" }} />
                       <div style={{ fontSize: 9, color: "#9A9580", fontWeight: 500 }}>{d.month}</div>
                     </div>
                   );
@@ -1295,7 +1297,7 @@ function PriceEditor({ housePrices, onSave, onBack }) {
         Вартість за ніч (₴)
       </div>
       {HOUSES.map(house => (
-        <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", marginBottom: 12 }}>
+        <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", marginBottom: 12 }}>
           <div style={{ padding: "10px 14px", background: house.color, display: "flex", alignItems: "center", gap: 8 }}>
             <HouseIcon houseId={house.id} size={20} color="rgba(255,255,255,0.8)" />
             <span style={{ color: "#fff", fontWeight: 700, fontSize: 17, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{house.name}</span>
@@ -1324,7 +1326,7 @@ function PriceEditor({ housePrices, onSave, onBack }) {
       ))}
       <button onClick={handleSave} style={{
         width: "100%", padding: 14, borderRadius: 14, border: "none",
-        background: saved ? "#4A6741" : "#2D3A2E", color: "#E8E2CC", fontSize: 16, fontWeight: 700,
+        background: saved ? "#4A6741" : "#4A5A3C", color: "#E8E2CC", fontSize: 16, fontWeight: 700,
         cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif",
         transition: "all 0.2s",
       }}>{saved ? "✓ Збережено" : "Зберегти"}</button>
@@ -1347,7 +1349,7 @@ function Settings({ housePrices, onSave }) {
   return (
     <div>
       {/* Prices section */}
-      <div style={{ background: "#FAFAF5", borderRadius: 14, border: "1px solid #DDD8C8", marginBottom: 12, overflow: "hidden" }}>
+      <div style={{ background: "#FAFAF5", borderRadius: 14, border: "1px solid #DDD8C8", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", marginBottom: 12, overflow: "hidden" }}>
         <div style={{ padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #DDD8C8" }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#5A6B4A", letterSpacing: 0.5, textTransform: "uppercase", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
             Вартість за ніч
@@ -1401,6 +1403,7 @@ export default function GuestHouseApp() {
   const [modal, setModal] = useState(null);
   const [activeHouse, setActiveHouse] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [listMode, setListMode] = useState("all"); // "all" | "month" | "year"
   const [listSubView, setListSubView] = useState("bookings");
 
   useEffect(() => {
@@ -1420,7 +1423,7 @@ export default function GuestHouseApp() {
   };
 
   if (!authChecked) return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#4A5A3C", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
       <div style={{ textAlign: "center" }}>
         <PineTree size={48} color="#6B8F3C" />
         <div style={{ fontSize: 20, color: "#D4CCAA", marginTop: 10, letterSpacing: 0.5 }}>Душа лісу</div>
@@ -1429,7 +1432,7 @@ export default function GuestHouseApp() {
   );
 
   if (!authed) return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#4A5A3C", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
       <div style={{ textAlign: "center", width: 260 }}>
         <PineTree size={48} color="#6B8F3C" />
         <div style={{ fontSize: 20, color: "#D4CCAA", marginTop: 10, marginBottom: 24, letterSpacing: 0.5 }}>Душа лісу</div>
@@ -1441,7 +1444,7 @@ export default function GuestHouseApp() {
           autoFocus
           style={{
             width: "100%", padding: "14px 16px", fontSize: 20, textAlign: "center", letterSpacing: 8,
-            background: "#3D4A3E", border: pinError ? "2px solid #9E4A3A" : "2px solid #5A6B4A", borderRadius: 14,
+            background: "#5A6A4C", border: pinError ? "2px solid #9E4A3A" : "2px solid #5A6B4A", borderRadius: 14,
             color: "#E8E2CC", outline: "none", fontFamily: "inherit", boxSizing: "border-box",
           }}
         />
@@ -1471,17 +1474,26 @@ export default function GuestHouseApp() {
   const monthStr = `${year}-${String(month + 1).padStart(2, "0")}`;
 
   const listBookings = bookings.filter(b => {
-    if (!b.checkIn || b.checkIn.substring(0, 7) !== monthStr) return false;
+    if (!b.checkIn) return false;
+    if (listMode === "month" && b.checkIn.substring(0, 7) !== monthStr) return false;
     if (activeHouse && b.houseId !== activeHouse) return false;
     if (searchTerm) {
       const c = contacts.find(c => c.id === b.contactId);
       return c?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || b.notes?.toLowerCase().includes(searchTerm.toLowerCase());
     }
     return true;
-  }).sort((a, b) => a.checkIn > b.checkIn ? -1 : 1);
+  }).sort((a, b) => {
+    if (listMode === "all") {
+      // Sort by createdAt descending (newest first)
+      const aTime = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+      const bTime = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+      return bTime - aTime;
+    }
+    return a.checkIn > b.checkIn ? -1 : 1;
+  });
 
   const listCancellations = cancellations.filter(c => {
-    if (c.cancelMonth !== monthStr) return false;
+    if (listMode === "month" && c.cancelMonth !== monthStr) return false;
     if (activeHouse && c.houseId !== activeHouse) return false;
     if (searchTerm) {
       const ct = contacts.find(ct => ct.id === c.contactId);
@@ -1491,15 +1503,15 @@ export default function GuestHouseApp() {
   }).sort((a, b) => (b.cancelledAtISO || "") > (a.cancelledAtISO || "") ? 1 : -1);
 
   if (loading) return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", color: "#D4CCAA" }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#4A5A3C", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", color: "#D4CCAA" }}>
       <div style={{ textAlign: "center" }}><PineTree size={48} color="#6B8F3C" /><div style={{ fontSize: 18, marginTop: 10 }}>Душа лісу</div></div>
     </div>
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F2EFDF", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", background: "#F8F7F2", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", paddingBottom: 80 }}>
       {/* HEADER */}
-      <div style={{ background: "#2D3A2E", color: "#E8E2CC", padding: "14px 16px", borderBottom: "3px solid #6B8F3C", position: "sticky", top: 0, zIndex: 100 }}>
+      <div style={{ background: "#4A5A3C", color: "#E8E2CC", padding: "14px 16px", borderBottom: "3px solid #6B8F3C", position: "sticky", top: 0, zIndex: 100 }}>
         <div className="header-inner" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <PineTree size={26} color="#6B8F3C" />
@@ -1527,14 +1539,14 @@ export default function GuestHouseApp() {
                 <button onClick={nextMonth} style={{ background: "#FAFAF5", border: "1px solid #DDD8C8", borderRadius: 10, width: 42, height: 42, fontSize: 18, cursor: "pointer", color: "#5A6B4A" }}>›</button>
               </div>
               <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 10, scrollbarWidth: "none" }}>
-                <button onClick={() => setActiveHouse(null)} style={{ padding: "7px 16px", borderRadius: 20, fontSize: 14, fontWeight: 700, border: !activeHouse ? "2px solid #2D3A2E" : "1.5px solid #C5BFAA", background: !activeHouse ? "#2D3A2E" : "#FAFAF5", color: !activeHouse ? "#E8E2CC" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>Всі</button>
+                <button onClick={() => setActiveHouse(null)} style={{ padding: "7px 16px", borderRadius: 20, fontSize: 14, fontWeight: 700, border: !activeHouse ? "2px solid #4A5A3C" : "1.5px solid #C5BFAA", background: !activeHouse ? "#4A5A3C" : "#FAFAF5", color: !activeHouse ? "#E8E2CC" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>Всі</button>
                 {HOUSES.map(h => (
                   <button key={h.id} onClick={() => setActiveHouse(activeHouse === h.id ? null : h.id)} style={{ padding: "7px 16px", borderRadius: 20, fontSize: 14, fontWeight: 700, border: activeHouse === h.id ? `2px solid ${h.color}` : "1.5px solid #C5BFAA", background: activeHouse === h.id ? h.color : "#FAFAF5", color: activeHouse === h.id ? "#fff" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>{h.name}</button>
                 ))}
               </div>
               <div className="calendar-houses">
                 {(activeHouse ? HOUSES.filter(h => h.id === activeHouse) : HOUSES).map(house => (
-                  <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8" }}>
+                  <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
                     <div style={{ padding: "10px 14px", background: house.color, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                         <HouseIcon houseId={house.id} size={20} color="rgba(255,255,255,0.8)" />
@@ -1564,15 +1576,30 @@ export default function GuestHouseApp() {
           {/* ── LIST ── */}
           {view === "list" && (
             <div className="list-view">
-              {/* Month navigation */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <button onClick={prevMonth} style={{ background: "#FAFAF5", border: "1px solid #DDD8C8", borderRadius: 10, width: 42, height: 42, fontSize: 18, cursor: "pointer", color: "#5A6B4A" }}>‹</button>
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", fontSize: 20, color: "#2D3A2E" }}>{MONTHS[month]}</div>
-                  <div style={{ fontSize: 14, color: "#7A8B6A" }}>{year}</div>
-                </div>
-                <button onClick={nextMonth} style={{ background: "#FAFAF5", border: "1px solid #DDD8C8", borderRadius: 10, width: 42, height: 42, fontSize: 18, cursor: "pointer", color: "#5A6B4A" }}>›</button>
+              {/* Mode toggle: All / Month / Year */}
+              <div style={{ display: "flex", background: "#E0DBC8", borderRadius: 12, padding: 3, marginBottom: 12 }}>
+                {[{ id: "all", label: "По даті створення" }, { id: "month", label: "Помісячно" }].map(t => (
+                  <button key={t.id} onClick={() => setListMode(t.id)} style={{
+                    flex: 1, padding: "9px 0", borderRadius: 10, border: "none", fontSize: 15, fontWeight: 700,
+                    fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", cursor: "pointer", transition: "all 0.15s",
+                    background: listMode === t.id ? "#FAFAF5" : "transparent",
+                    color: listMode === t.id ? "#2D3A2E" : "#7A8B6A",
+                    boxShadow: listMode === t.id ? "0 1px 4px rgba(0,0,0,0.1)" : "none",
+                  }}>{t.label}</button>
+                ))}
               </div>
+
+              {/* Navigation: month or year */}
+              {listMode === "month" && (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <button onClick={prevMonth} style={{ background: "#FAFAF5", border: "1px solid #DDD8C8", borderRadius: 10, width: 42, height: 42, fontSize: 18, cursor: "pointer", color: "#5A6B4A" }}>‹</button>
+                  <div style={{ textAlign: "center" }}>
+                    <div style={{ fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", fontSize: 20, color: "#2D3A2E" }}>{MONTHS[month]}</div>
+                    <div style={{ fontSize: 14, color: "#7A8B6A" }}>{year}</div>
+                  </div>
+                  <button onClick={nextMonth} style={{ background: "#FAFAF5", border: "1px solid #DDD8C8", borderRadius: 10, width: 42, height: 42, fontSize: 18, cursor: "pointer", color: "#5A6B4A" }}>›</button>
+                </div>
+              )}
 
               <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Пошук бронювань..."
                 style={{ width: "100%", padding: "12px 16px", border: "1.5px solid #C5BFAA", borderRadius: 14, fontSize: 18, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", outline: "none", color: "#2D3A2E", background: "#FAFAF5", marginBottom: 10, boxSizing: "border-box" }} />
@@ -1612,7 +1639,7 @@ export default function GuestHouseApp() {
                         const contact = contacts.find(c => c.id === b.contactId);
                         const nights = daysBetween(parseDate(b.checkIn), parseDate(b.checkOut));
                         return (
-                          <div key={b.id} onClick={() => setModal({ type: "editBooking", data: b })} style={{ background: "#FAFAF5", borderRadius: 14, padding: "14px 16px", border: "1px solid #DDD8C8", cursor: "pointer", borderLeft: `4px solid ${house?.color || "#ccc"}` }}>
+                          <div key={b.id} onClick={() => setModal({ type: "editBooking", data: b })} style={{ background: "#FAFAF5", borderRadius: 14, padding: "14px 16px", border: "1px solid #DDD8C8", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", cursor: "pointer", borderLeft: `4px solid ${house?.color || "#ccc"}` }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
                               <div style={{ fontWeight: 700, fontSize: 18, color: "#2D3A2E" }}>{b.status === "unavailable" ? "Недоступно" : (contact?.name || "?")}</div>
                               <Badge status={b.status} small />
@@ -1655,7 +1682,7 @@ export default function GuestHouseApp() {
                           ? `${cancelDate.getDate()} ${MONTHS_GEN[cancelDate.getMonth()]} ${cancelDate.getFullYear()}, ${String(cancelDate.getHours()).padStart(2,"0")}:${String(cancelDate.getMinutes()).padStart(2,"0")}`
                           : "—";
                         return (
-                          <div key={c.id} style={{ background: "#FAFAF5", borderRadius: 14, padding: "14px 16px", border: "1px solid #DDD8C8", borderLeft: "4px solid #9E4A3A", opacity: 0.85 }}>
+                          <div key={c.id} style={{ background: "#FAFAF5", borderRadius: 14, padding: "14px 16px", border: "1px solid #DDD8C8", boxShadow: "0 2px 8px rgba(0,0,0,0.06)", borderLeft: "4px solid #9E4A3A", opacity: 0.85 }}>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
                               <div style={{ fontWeight: 700, fontSize: 18, color: "#2D3A2E" }}>{c.status === "unavailable" ? "Недоступно" : (contact?.name || "?")}</div>
                               <span style={{ padding: "2px 8px", borderRadius: 8, fontSize: 12, fontWeight: 700, background: "#F5E6E0", color: "#9E4A3A", border: "1px solid #9E4A3A" }}>Скасовано</span>
