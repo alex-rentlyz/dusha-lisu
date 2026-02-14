@@ -619,16 +619,13 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
   );
 }
 
-// Stable color palette for distinguishing bookings on the calendar
-const BOOKING_COLORS = [
-  "#4A6741", "#8B7D3C", "#3D5A4C", "#7A5A8B", "#5A7A8B",
-  "#8B5A4A", "#5A8B6A", "#6B6347", "#4A708B", "#8B6B4A",
-];
-
-function getBookingColor(bookingId) {
+// Generate a stable muted color from contact name
+function getNameColor(name) {
+  if (!name) return "#7A8B6A";
   let hash = 0;
-  for (let i = 0; i < bookingId.length; i++) hash = ((hash << 5) - hash + bookingId.charCodeAt(i)) | 0;
-  return BOOKING_COLORS[Math.abs(hash) % BOOKING_COLORS.length];
+  for (let i = 0; i < name.length; i++) hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0;
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 45%, 38%)`;
 }
 
 // ── CALENDAR GRID ──
@@ -668,8 +665,8 @@ function CalendarGrid({ year, month, bookings, house, onDayClick, contacts }) {
         {hasBooking && (
           <div style={{ marginTop: 2, padding: "0 3px", display: "flex", flexDirection: "column", gap: 2 }}>
             {dayBookings.map(b => {
-              const color = getBookingColor(b.id);
               const contact = contacts.find(c => c.id === b.contactId);
+              const color = b.status === "unavailable" ? "#9E4A3A" : getNameColor(contact?.name);
               const label = b.status === "unavailable" ? "✕" : shortName(contact?.name, 6);
               const isStart = b.checkIn === dayStr;
               return (
