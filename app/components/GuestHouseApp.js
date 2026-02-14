@@ -425,12 +425,13 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
             const active = form.houseId === h.id;
             return (
               <button key={h.id} onClick={() => { set("houseId", h.id); set("priceManual", false); }} style={{
-                flex: 1, padding: "10px 6px", borderRadius: 10, fontSize: 14, fontWeight: 700,
+                flex: 1, padding: "8px 6px 10px", borderRadius: 10, fontSize: 13, fontWeight: 700,
                 border: active ? `2px solid ${h.color}` : "1.5px solid #DDD8C8",
                 background: active ? `${h.color}18` : "#fff",
                 color: active ? h.color : "#7A8B6A",
-                cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", transition: "all 0.15s"
-              }}>{h.name}</button>
+                cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", transition: "all 0.15s",
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+              }}><HouseIcon houseId={h.id} size={22} color={active ? h.color : "#7A8B6A"} />{h.name}</button>
             );
           })}
         </div>
