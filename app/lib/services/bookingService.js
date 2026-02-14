@@ -13,10 +13,12 @@ const COLLECTION = "bookings";
 export function subscribeToBookings(callback) {
   const ref = collection(getDb(), COLLECTION);
   return onSnapshot(ref, (snapshot) => {
-    const bookings = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const bookings = snapshot.docs
+      .filter((doc) => !doc.id.startsWith("__"))
+      .map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
     callback(bookings);
   }, (error) => {
     console.error("Bookings listener error:", error);
@@ -27,14 +29,18 @@ export function subscribeToBookings(callback) {
  * Create or update a booking (upsert).
  * Uses client-generated ID to preserve existing app behavior.
  */
-export async function saveBooking(booking) {
-  const { id, ...data } = booking;
+export async function saveBooking(booking, isNew = false) {
+  const { id, createdAt, updatedAt, ...data } = booking;
   const ref = doc(getDb(), COLLECTION, id);
-  await setDoc(ref, {
+  const payload = {
     ...data,
     updatedAt: serverTimestamp(),
-    createdAt: data.createdAt || serverTimestamp(),
-  }, { merge: true });
+  };
+  // Only set createdAt for new bookings — merge:true preserves existing fields
+  if (isNew) {
+    payload.createdAt = serverTimestamp();
+  }
+  await setDoc(ref, payload, { merge: true });
 }
 
 /**

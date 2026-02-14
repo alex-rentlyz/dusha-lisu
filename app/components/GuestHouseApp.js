@@ -30,6 +30,12 @@ function nightsLabel(n) { return n === 1 ? "ніч" : (n >= 2 && n <= 4) ? "но
 function commentsLabel(n) { return n === 1 ? "коментар" : (n >= 2 && n <= 4) ? "коментарі" : "коментарів"; }
 function shortName(name, max = 10) { if (!name) return "?"; const first = name.split(/\s+/)[0]; return first.length > max ? first.slice(0, max - 1) + "…" : first; }
 function formatMoney(n) { return n.toLocaleString("uk-UA") + " ₴"; }
+function formatTimestamp(ts) {
+  if (!ts) return null;
+  const d = ts?.toDate ? ts.toDate() : (ts instanceof Date ? ts : new Date(ts));
+  if (isNaN(d.getTime())) return null;
+  return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+}
 
 function isWeekend(dateStr) {
   const d = parseDate(dateStr);
@@ -48,11 +54,35 @@ function eachNight(checkIn, checkOut) {
   return nights;
 }
 
-function calcDefaultPrice(houseId, checkIn, checkOut) {
+const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+
+function getDefaultHousePrices() {
+  const p = {};
+  HOUSES.forEach(h => {
+    p[h.id] = {};
+    DAY_KEYS.forEach(k => {
+      p[h.id][k] = (k === "fri" || k === "sat" || k === "sun") ? h.weekend : h.weekday;
+    });
+  });
+  return p;
+}
+
+function getNightRate(houseId, dateStr, housePrices) {
+  const d = parseDate(dateStr);
+  const key = DAY_KEYS[d.getDay()];
+  if (housePrices && housePrices[houseId]) {
+    const val = housePrices[houseId][key];
+    if (val != null && typeof val === "number") return val;
+  }
+  const defaults = getDefaultHousePrices();
+  return defaults[houseId]?.[key] ?? 0;
+}
+
+function calcDefaultPrice(houseId, checkIn, checkOut, housePrices) {
   const house = HOUSES.find(h => h.id === houseId);
   if (!house || !checkIn || !checkOut) return 0;
   const nights = eachNight(checkIn, checkOut);
-  return nights.reduce((sum, n) => sum + (isWeekend(n) ? house.weekend : house.weekday), 0);
+  return nights.reduce((sum, n) => sum + getNightRate(houseId, n, housePrices), 0);
 }
 
 function getOccupiedDates(bookings, houseId, excludeId) {
@@ -128,6 +158,10 @@ function HouseIcon({ houseId, size = 16, color = "currentColor" }) {
   return <PineTree size={size} color={color} />;
 }
 
+function IconSettings({ size = 17, color = "currentColor", filled = false }) {
+  if (filled) return (<svg width={size} height={size} viewBox="0 0 24 24" fill={color} stroke={color} strokeWidth="1"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3" fill="rgba(0,0,0,0.2)"/></svg>);
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>);
+}
 function IconUser({ size = 17, color = "currentColor" }) {
   return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
 }
@@ -346,7 +380,7 @@ function GuestCounter({ value, onChange }) {
 }
 
 // ── BOOKING FORM ──
-function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, onDelete, onSaveContact }) {
+function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, onDelete, onSaveContact, housePrices }) {
   const isEdit = !!booking?.id;
   const existingContact = isEdit ? contacts.find(c => c.id === booking?.contactId) : null;
 
@@ -376,7 +410,7 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
 
   const occupied = useMemo(() => getOccupiedDates(allBookings, form.houseId, booking?.id), [allBookings, form.houseId, booking?.id]);
 
-  const defaultPrice = useMemo(() => calcDefaultPrice(form.houseId, form.checkIn, form.checkOut), [form.houseId, form.checkIn, form.checkOut]);
+  const defaultPrice = useMemo(() => calcDefaultPrice(form.houseId, form.checkIn, form.checkOut, housePrices), [form.houseId, form.checkIn, form.checkOut, housePrices]);
   const displayPrice = form.priceManual ? (form.price ?? defaultPrice) : defaultPrice;
 
   const addComment = () => {
@@ -418,6 +452,12 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
 
   return (
     <div>
+      {isEdit && (booking?.createdAt || booking?.updatedAt) && (
+        <div style={{ fontSize: 11, color: "#B0A890", marginBottom: 10, lineHeight: 1.5 }}>
+          {formatTimestamp(booking.createdAt) && <div>Створено: {formatTimestamp(booking.createdAt)}</div>}
+          {formatTimestamp(booking.updatedAt) && formatTimestamp(booking.updatedAt) !== formatTimestamp(booking.createdAt) && <div>Змінено: {formatTimestamp(booking.updatedAt)}</div>}
+        </div>
+      )}
       <div style={{ marginBottom: 14 }}>
         <label style={{ display: "block", marginBottom: 6, fontSize: 13, fontWeight: 700, color: "#5A6B4A", letterSpacing: 0.6, textTransform: "uppercase", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>Будинок <span style={{ color: "#9E4A3A" }}>*</span></label>
         <div style={{ display: "flex", gap: 6 }}>
@@ -473,7 +513,7 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
           </div>
           <Input label="Ім'я" value={contactForm.name} onChange={v => setC("name", v)} required placeholder="Іван Петренко" />
           <Input label="Телефон" value={contactForm.phone} onChange={v => setC("phone", v)} placeholder="+380..." />
-          <Input label="Примітки до контакту" value={contactForm.notes} onChange={v => setC("notes", v)} rows={1} placeholder="Нотатки..." />
+          <Input label="Примітки до контакту" value={contactForm.notes} onChange={v => setC("notes", v)} rows={2} placeholder="Нотатки..." />
         </div>
       )}
 
@@ -489,13 +529,13 @@ function BookingForm({ booking, contacts, houses, allBookings, onSave, onClose, 
               const d = parseDate(n);
               const dayName = ["Нд","Пн","Вт","Ср","Чт","Пт","Сб"][d.getDay()];
               const we = isWeekend(n);
-              const rate = we ? house.weekend : house.weekday;
+              const rate = getNightRate(form.houseId, n, housePrices);
               return (
                 <div key={n} style={{
                   display: "flex", justifyContent: "space-between", padding: "4px 0",
                   fontSize: 14, color: "#5A6B4A", borderBottom: i < nights.length - 1 ? "1px solid #E0DBC8" : "none"
                 }}>
-                  <span>{d.getDate()} {MONTHS_GEN[d.getMonth()]} ({dayName}) {we ? <IconMoon size={12} color="#8B7D3C" /> : ""}</span>
+                  <span>{d.getDate()} {MONTHS_GEN[d.getMonth()]} ({dayName}) {we ? <IconMoney size={12} color="#8B7D3C" /> : ""}</span>
                   <span style={{ fontWeight: 600 }}>{formatMoney(rate)}</span>
                 </div>
               );
@@ -1215,6 +1255,134 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
   );
 }
 
+// ── SETTINGS ──
+const DAY_LABELS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
+const DAY_KEYS_ORDERED = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+function PriceEditor({ housePrices, onSave, onBack }) {
+  const defaults = getDefaultHousePrices();
+  const [prices, setPrices] = useState(() => {
+    const p = {};
+    HOUSES.forEach(h => {
+      p[h.id] = {};
+      DAY_KEYS_ORDERED.forEach(k => {
+        p[h.id][k] = housePrices?.[h.id]?.[k] ?? defaults[h.id][k];
+      });
+    });
+    return p;
+  });
+  const [saved, setSaved] = useState(false);
+
+  const setPrice = (houseId, dayKey, val) => {
+    setPrices(prev => ({ ...prev, [houseId]: { ...prev[houseId], [dayKey]: val === "" ? "" : Number(val) } }));
+    setSaved(false);
+  };
+
+  const handleSave = async () => {
+    const clean = {};
+    HOUSES.forEach(h => {
+      clean[h.id] = {};
+      DAY_KEYS_ORDERED.forEach(k => {
+        clean[h.id][k] = prices[h.id][k] === "" ? 0 : Number(prices[h.id][k]);
+      });
+    });
+    await onSave(clean);
+    setSaved(true);
+    setTimeout(() => { setSaved(false); onBack(); }, 1000);
+  };
+
+  return (
+    <div>
+      <button onClick={onBack} style={{ background: "none", border: "none", color: "#5A6B4A", fontSize: 14, fontWeight: 700, cursor: "pointer", marginBottom: 12, padding: 0, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>← Назад</button>
+      <div style={{ fontSize: 14, fontWeight: 700, color: "#5A6B4A", marginBottom: 14, letterSpacing: 0.5, textTransform: "uppercase", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
+        Вартість за ніч (₴)
+      </div>
+      {HOUSES.map(house => (
+        <div key={house.id} style={{ background: "#FAFAF5", borderRadius: 14, overflow: "hidden", border: "1px solid #DDD8C8", marginBottom: 12 }}>
+          <div style={{ padding: "10px 14px", background: house.color, display: "flex", alignItems: "center", gap: 8 }}>
+            <HouseIcon houseId={house.id} size={20} color="rgba(255,255,255,0.8)" />
+            <span style={{ color: "#fff", fontWeight: 700, fontSize: 17, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{house.name}</span>
+          </div>
+          <div style={{ padding: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
+              {DAY_KEYS_ORDERED.map((k, i) => (
+                <div key={k} style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: i >= 4 ? "#8B7D3C" : "#7A8B6A", marginBottom: 4, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{DAY_LABELS_SHORT[i]}</div>
+                  <input
+                    type="text" inputMode="numeric"
+                    value={prices[house.id][k]}
+                    onChange={e => setPrice(house.id, k, e.target.value.replace(/\D/g, ""))}
+                    style={{
+                      width: "100%", padding: "8px 2px", fontSize: 13, fontWeight: 700, textAlign: "center",
+                      border: "1.5px solid #DDD8C8", borderRadius: 8, background: i >= 4 ? "#FBF8EE" : "#fff",
+                      color: "#2D3A2E", outline: "none", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+      <button onClick={handleSave} style={{
+        width: "100%", padding: 14, borderRadius: 14, border: "none",
+        background: saved ? "#4A6741" : "#2D3A2E", color: "#E8E2CC", fontSize: 16, fontWeight: 700,
+        cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif",
+        transition: "all 0.2s",
+      }}>{saved ? "✓ Збережено" : "Зберегти"}</button>
+    </div>
+  );
+}
+
+function IconEdit({ size = 16, color = "currentColor" }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>);
+}
+
+function Settings({ housePrices, onSave }) {
+  const [editing, setEditing] = useState(false);
+  const defaults = getDefaultHousePrices();
+
+  if (editing) return <PriceEditor housePrices={housePrices} onSave={onSave} onBack={() => setEditing(false)} />;
+
+  const hp = housePrices || defaults;
+
+  return (
+    <div>
+      {/* Prices section */}
+      <div style={{ background: "#FAFAF5", borderRadius: 14, border: "1px solid #DDD8C8", marginBottom: 12, overflow: "hidden" }}>
+        <div style={{ padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #DDD8C8" }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "#5A6B4A", letterSpacing: 0.5, textTransform: "uppercase", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
+            Вартість за ніч
+          </div>
+          <button onClick={() => setEditing(true)} style={{ background: "none", border: "1.5px solid #C5BFAA", borderRadius: 8, padding: "5px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, color: "#5A6B4A", fontSize: 13, fontWeight: 600, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
+            <IconEdit size={14} color="#5A6B4A" /> Змінити
+          </button>
+        </div>
+        {HOUSES.map((house, hi) => (
+          <div key={house.id} style={{ padding: "10px 14px", borderBottom: hi < HOUSES.length - 1 ? "1px solid #E0DBC8" : "none" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <HouseIcon houseId={house.id} size={18} color={house.color} />
+              <span style={{ fontWeight: 700, fontSize: 15, color: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{house.name}</span>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
+              {DAY_KEYS_ORDERED.map((k, i) => {
+                const val = hp[house.id]?.[k] ?? defaults[house.id][k];
+                return (
+                  <div key={k} style={{ textAlign: "center" }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: i >= 4 ? "#8B7D3C" : "#9A9580", marginBottom: 2, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{DAY_LABELS_SHORT[i]}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{(val / 1000).toFixed(1)}к</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── MAIN APP ──
 export default function GuestHouseApp() {
   const [authed, setAuthed] = useState(false);
@@ -1222,10 +1390,11 @@ export default function GuestHouseApp() {
   const [pinError, setPinError] = useState(false);
 
   const {
-    bookings, contacts, cancellations, loading,
+    bookings, contacts, cancellations, housePrices, loading,
     saveBooking: fbSaveBooking,
     deleteBooking: fbDeleteBooking,
     saveContact: fbSaveContact,
+    saveHousePrices: fbSaveHousePrices,
   } = useFirestoreData();
 
   const [view, setView] = useState("calendar");
@@ -1448,6 +1617,12 @@ export default function GuestHouseApp() {
                             )}
                             {b.notes && <div style={{ fontSize: 13, color: "#9A9580", marginTop: 2 }}>{b.notes}</div>}
                             {b.comments?.length > 0 && <div style={{ fontSize: 13, color: "#7A8B6A", marginTop: 2, display: "flex", alignItems: "center", gap: 4 }}><IconComment size={13} color="#7A8B6A" /> {b.comments.length} {commentsLabel(b.comments.length)}</div>}
+                            {(b.createdAt || b.updatedAt) && (
+                              <div style={{ fontSize: 11, color: "#B0A890", marginTop: 4, lineHeight: 1.5 }}>
+                                {formatTimestamp(b.createdAt) && <div>Створено: {formatTimestamp(b.createdAt)}</div>}
+                                {formatTimestamp(b.updatedAt) && formatTimestamp(b.updatedAt) !== formatTimestamp(b.createdAt) && <div>Змінено: {formatTimestamp(b.updatedAt)}</div>}
+                              </div>
+                            )}
                           </div>
                         );
                       })}
@@ -1496,6 +1671,9 @@ export default function GuestHouseApp() {
 
           {/* ── ANALYTICS ── */}
           {view === "analytics" && <Analytics bookings={bookings} contacts={contacts} year={year} month={month} />}
+
+          {/* ── SETTINGS ── */}
+          {view === "settings" && <Settings housePrices={housePrices} onSave={fbSaveHousePrices} />}
         </div>
       </div>
 
@@ -1506,12 +1684,14 @@ export default function GuestHouseApp() {
             { id: "calendar", label: "Календар" },
             { id: "list", label: "Бронювання" },
             { id: "analytics", label: "Аналітика" },
+            { id: "settings", label: "Налашт." },
           ].map(v => {
             const active = view === v.id;
             const clr = active ? "#6B8F3C" : "#5A6B4A";
             const icon = v.id === "calendar" ? <IconCalendar size={22} color={clr} filled={active} />
               : v.id === "list" ? <IconClipboard size={22} color={clr} filled={active} />
-              : <IconChart size={22} color={clr} filled={active} />;
+              : v.id === "analytics" ? <IconChart size={22} color={clr} filled={active} />
+              : <IconSettings size={22} color={clr} filled={active} />;
             return (
               <button key={v.id} onClick={() => setView(v.id)} style={{ background: "none", border: "none", padding: "6px 16px", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 2, transition: "all 0.15s" }}>
                 {icon}
@@ -1526,13 +1706,13 @@ export default function GuestHouseApp() {
       {modal?.type === "newBooking" && (
         <Modal title="Нове бронювання" onClose={() => setModal(null)}>
           <BookingForm booking={modal.data} contacts={contacts} houses={HOUSES} allBookings={bookings}
-            onSave={saveBooking} onClose={() => setModal(null)} onDelete={deleteBooking} onSaveContact={saveContact} />
+            onSave={saveBooking} onClose={() => setModal(null)} onDelete={deleteBooking} onSaveContact={saveContact} housePrices={housePrices} />
         </Modal>
       )}
       {modal?.type === "editBooking" && (
         <Modal title="Редагувати бронювання" onClose={() => setModal(null)}>
           <BookingForm booking={modal.data} contacts={contacts} houses={HOUSES} allBookings={bookings}
-            onSave={saveBooking} onClose={() => setModal(null)} onDelete={deleteBooking} onSaveContact={saveContact} />
+            onSave={saveBooking} onClose={() => setModal(null)} onDelete={deleteBooking} onSaveContact={saveContact} housePrices={housePrices} />
         </Modal>
       )}
       {modal?.type === "dayList" && (

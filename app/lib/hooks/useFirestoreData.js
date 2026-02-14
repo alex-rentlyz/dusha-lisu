@@ -5,6 +5,7 @@ import { ensureAuth } from "../firebase/auth";
 import { subscribeToBookings, saveBooking as fbSaveBooking, removeBooking } from "../services/bookingService";
 import { subscribeToContacts, saveContact as fbSaveContact } from "../services/contactService";
 import { subscribeToCancellations, saveCancellation } from "../services/cancellationService";
+import { subscribeToHousePrices, saveHousePrices as fbSaveHousePrices, loadHousePricesFromLocalStorage } from "../services/settingsService";
 import { migrateFromLocalStorage } from "../services/migrationService";
 import { loadData, saveData } from "../storage";
 
@@ -34,6 +35,8 @@ export function useFirestoreData() {
   const [bookings, setBookings] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [cancellations, setCancellations] = useState([]);
+  // Initialize housePrices from localStorage immediately for fast first render
+  const [housePrices, setHousePrices] = useState(() => loadHousePricesFromLocalStorage());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const unsubscribers = useRef([]);
@@ -73,7 +76,11 @@ export function useFirestoreData() {
           if (mounted) setCancellations(data);
         });
 
-        unsubscribers.current = [unsubBookings, unsubContacts, unsubCancellations];
+        const unsubPrices = subscribeToHousePrices((data) => {
+          if (mounted) setHousePrices(data);
+        });
+
+        unsubscribers.current = [unsubBookings, unsubContacts, unsubCancellations, unsubPrices];
 
         // Loading is set to false after first snapshot arrives
         // Use a small delay to ensure at least one snapshot is received
@@ -116,12 +123,13 @@ export function useFirestoreData() {
       return;
     }
     try {
-      await fbSaveBooking(booking);
+      const isNew = !bookings.some((b) => b.id === booking.id);
+      await fbSaveBooking(booking, isNew);
     } catch (err) {
       console.error("Failed to save booking:", err);
       setError(err);
     }
-  }, []);
+  }, [bookings]);
 
   const deleteBooking = useCallback(async (id) => {
     if (!isFirebaseConfigured()) {
@@ -173,14 +181,32 @@ export function useFirestoreData() {
     }
   }, []);
 
+  const saveHousePrices = useCallback(async (prices) => {
+    // Always update local state immediately for instant UI feedback
+    setHousePrices(prices);
+
+    if (!isFirebaseConfigured()) {
+      return;
+    }
+    try {
+      // fbSaveHousePrices writes to localStorage first, then Firestore
+      await fbSaveHousePrices(prices);
+    } catch (err) {
+      console.error("Failed to save house prices:", err);
+      setError(err);
+    }
+  }, []);
+
   return {
     bookings,
     contacts,
     cancellations,
+    housePrices,
     loading,
     error,
     saveBooking,
     deleteBooking,
     saveContact,
+    saveHousePrices,
   };
 }
