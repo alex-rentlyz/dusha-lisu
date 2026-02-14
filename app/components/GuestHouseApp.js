@@ -1213,6 +1213,10 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
 
 // ── MAIN APP ──
 export default function GuestHouseApp() {
+  const [authed, setAuthed] = useState(false);
+  const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState(false);
+
   const {
     bookings, contacts, cancellations, loading,
     saveBooking: fbSaveBooking,
@@ -1227,6 +1231,48 @@ export default function GuestHouseApp() {
   const [activeHouse, setActiveHouse] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [listSubView, setListSubView] = useState("bookings");
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("dusha_auth") === "1") setAuthed(true);
+  }, []);
+
+  const handleLogin = () => {
+    if (pin === "9094") {
+      localStorage.setItem("dusha_auth", "1");
+      setAuthed(true);
+      setPinError(false);
+    } else {
+      setPinError(true);
+      setPin("");
+    }
+  };
+
+  if (!authed) return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#2D3A2E", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>
+      <div style={{ textAlign: "center", width: 260 }}>
+        <PineTree size={48} color="#6B8F3C" />
+        <div style={{ fontSize: 20, color: "#D4CCAA", marginTop: 10, marginBottom: 24, letterSpacing: 0.5 }}>Душа лісу</div>
+        <input
+          type="password" inputMode="numeric" pattern="[0-9]*" maxLength={4}
+          value={pin} onChange={e => { setPin(e.target.value.replace(/\D/g, "")); setPinError(false); }}
+          onKeyDown={e => e.key === "Enter" && handleLogin()}
+          placeholder="Пароль"
+          autoFocus
+          style={{
+            width: "100%", padding: "14px 16px", fontSize: 20, textAlign: "center", letterSpacing: 8,
+            background: "#3D4A3E", border: pinError ? "2px solid #9E4A3A" : "2px solid #5A6B4A", borderRadius: 14,
+            color: "#E8E2CC", outline: "none", fontFamily: "inherit", boxSizing: "border-box",
+          }}
+        />
+        {pinError && <div style={{ color: "#E07A6A", fontSize: 14, marginTop: 8 }}>Невірний пароль</div>}
+        <button onClick={handleLogin} style={{
+          width: "100%", padding: "14px", marginTop: 14, borderRadius: 14, border: "none",
+          background: "#6B8F3C", color: "#fff", fontSize: 16, fontWeight: 700, cursor: "pointer",
+          fontFamily: "inherit",
+        }}>Увійти</button>
+      </div>
+    </div>
+  );
 
   const saveContact = (c) => { fbSaveContact(c); };
   const saveBooking = (b) => { fbSaveBooking(b); setModal(null); };
@@ -1299,10 +1345,10 @@ export default function GuestHouseApp() {
                 </div>
                 <button onClick={nextMonth} style={{ background: "#FAFAF5", border: "1px solid #DDD8C8", borderRadius: 10, width: 42, height: 42, fontSize: 18, cursor: "pointer", color: "#5A6B4A" }}>›</button>
               </div>
-              <div style={{ display: "flex", gap: 6, paddingBottom: 10 }}>
-                <button onClick={() => setActiveHouse(null)} style={{ flex: 1, minWidth: 0, padding: "7px 4px", borderRadius: 20, fontSize: 13, fontWeight: 700, border: !activeHouse ? "2px solid #2D3A2E" : "1.5px solid #C5BFAA", background: !activeHouse ? "#2D3A2E" : "#FAFAF5", color: !activeHouse ? "#E8E2CC" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", height: 44, display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", lineHeight: 1.2 }}>Всі</button>
+              <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 10, scrollbarWidth: "none" }}>
+                <button onClick={() => setActiveHouse(null)} style={{ padding: "7px 16px", borderRadius: 20, fontSize: 14, fontWeight: 700, border: !activeHouse ? "2px solid #2D3A2E" : "1.5px solid #C5BFAA", background: !activeHouse ? "#2D3A2E" : "#FAFAF5", color: !activeHouse ? "#E8E2CC" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>Всі</button>
                 {HOUSES.map(h => (
-                  <button key={h.id} onClick={() => setActiveHouse(activeHouse === h.id ? null : h.id)} style={{ flex: 1, minWidth: 0, padding: "7px 4px", borderRadius: 20, fontSize: 13, fontWeight: 700, border: activeHouse === h.id ? `2px solid ${h.color}` : "1.5px solid #C5BFAA", background: activeHouse === h.id ? h.color : "#FAFAF5", color: activeHouse === h.id ? "#fff" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", height: 44, display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", lineHeight: 1.2 }}>{h.name}</button>
+                  <button key={h.id} onClick={() => setActiveHouse(activeHouse === h.id ? null : h.id)} style={{ padding: "7px 16px", borderRadius: 20, fontSize: 14, fontWeight: 700, border: activeHouse === h.id ? `2px solid ${h.color}` : "1.5px solid #C5BFAA", background: activeHouse === h.id ? h.color : "#FAFAF5", color: activeHouse === h.id ? "#fff" : "#5A6B4A", cursor: "pointer", fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>{h.name}</button>
                 ))}
               </div>
               <div className="calendar-houses">
