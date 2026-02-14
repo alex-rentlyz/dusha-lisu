@@ -779,7 +779,6 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
     totalPendingNights: allStats.reduce((s, h) => s + h.stats.pendingNights, 0),
     totalUnavailableNights: allStats.reduce((s, h) => s + h.stats.unavailableNights, 0),
     totalFreeNights: allStats.reduce((s, h) => s + h.stats.freeNights, 0),
-    totalGuests: allStats.reduce((s, h) => s + h.stats.guests, 0),
     totalCheckIns: allStats.reduce((s, h) => s + h.stats.checkIns, 0),
     avgOccupancy: allStats.length > 0 ? Math.round(allStats.reduce((s, h) => s + h.stats.occupancy, 0) / allStats.length) : 0,
   };
@@ -969,9 +968,8 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
         })()}
 
         {/* Key metrics row */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
           {[
-            { n: summary.totalGuests, label: "Гостей", icon: <IconUser size={17} color="#5A6B4A" /> },
             { n: summary.totalCheckIns, label: "Заїздів", icon: <IconCalendar size={17} color="#5A6B4A" /> },
             { n: `${summary.avgOccupancy}%`, label: "Заповненість", icon: <IconChart size={17} color="#5A6B4A" /> },
           ].map((s, i) => (
@@ -1048,7 +1046,6 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
               <StatRow label="Вільно ночей" value={stats.freeNights} color="#7A8B6A" />
               <StatRow label="Будні / Вихідні" value={`${stats.weekdayNights} / ${stats.weekendNights}`} />
               <StatRow label="Кількість заїздів" value={stats.checkIns} bold />
-              <StatRow label="Унікальних гостей" value={stats.guests} bold />
             </div>
 
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
@@ -1079,7 +1076,7 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
                         )}
                       </div>
                       <div style={{ color: "#7A8B6A", fontSize: 13, marginTop: 2 }}>
-                        {displayDate(b.checkIn)} — {displayDate(b.checkOut)} · {b.nightsInMonth} з {b.totalNights} {nightsLabel(b.totalNights)}
+                        {displayDate(b.checkIn)} — {displayDate(b.checkOut)} · {b.nightsInMonth === b.totalNights ? `${b.totalNights} ${nightsLabel(b.totalNights)}` : `${b.nightsInMonth} з ${b.totalNights} ${nightsLabel(b.totalNights)}`}
                         {b.guests > 1 ? ` · ${b.guests} гостей` : ""}
                       </div>
                     </div>
@@ -1226,7 +1223,6 @@ function Analytics({ bookings, contacts, year: initYear, month: initMonth }) {
               <StatRow label="Вільно ночей" value={freeNights} color="#7A8B6A" />
               <StatRow label="Будні / Вихідні" value={`${weekdayNights} / ${weekendNights}`} />
               <StatRow label="Кількість заїздів" value={checkIns} bold />
-              <StatRow label="Унікальних гостей" value={guests} bold />
             </div>
 
             {/* Per-month revenue mini-chart for this house */}
@@ -1545,7 +1541,7 @@ export default function GuestHouseApp() {
                         <span style={{ color: "#fff", fontWeight: 700, fontSize: 17, fontFamily: "-apple-system, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif" }}>{house.name}</span>
                       </div>
                       <span style={{ background: "rgba(255,255,255,0.2)", padding: "2px 10px", borderRadius: 12, fontSize: 13, color: "#fff", fontWeight: 600 }}>
-                        {bookings.filter(b => b.houseId === house.id && b.status === "booked" && b.checkOut >= formatDate(new Date())).length} акт.
+                        {(() => { const n = bookings.filter(b => b.houseId === house.id && b.status === "booked" && b.checkOut >= formatDate(new Date())).reduce((sum, b) => sum + daysBetween(parseDate(b.checkIn), parseDate(b.checkOut)), 0); return `${n} ${nightsLabel(n)}`; })()}
                       </span>
                     </div>
                     <div style={{ padding: 10 }}>
